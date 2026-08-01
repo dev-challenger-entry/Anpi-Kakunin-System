@@ -1,5 +1,3 @@
-本リポジトリでは、
-
 バックエンドはJavaのSpringboot Project
 フロントエンドはreact
 

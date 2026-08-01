@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class ExerciseController {
 
     @GetMapping("/学習中")
-    public String getSweetsMessage() {
-        return "パフェ"; // ここを好きなスイーツに変えてみてください！
-    }
+    public String getDepartments() {
+        return "部署一覧（仮）"; 
 }
