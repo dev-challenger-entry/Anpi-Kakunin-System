@@ -43,3 +43,4 @@ Thumbs.db
 
 ### Logs ###
 *.log
+data/safety_check.mv.db
