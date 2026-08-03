@@ -32,6 +32,8 @@ dependencies {
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     //データベースとの連携のために以下の1行を追加
 	implementation 'com.h2database:h2'
+    //.envファイル（環境変数を書き込んだ設定ファイル）を自動的に読み込めるようにする拡張ツール（ライブラリ）
+	implementation 'me.paulschwarz:spring-dotenv:4.0.0'
 }
 
 tasks.named('test') {

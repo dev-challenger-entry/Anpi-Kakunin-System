@@ -44,3 +44,7 @@ Thumbs.db
 ### Logs ###
 *.log
 data/safety_check.mv.db
+
+
+#ローカル環境変数ファイルをGitの管理から除外
+.env
