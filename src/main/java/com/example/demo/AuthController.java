@@ -32,7 +32,7 @@ public class AuthController {
 
     // 2. マイページ用の最低限の道（Spring Data JPAで書き換え）
     @GetMapping("/api/mypage")
-    public Object getMypageData(@RequestParam String employeeId) {
+    public Object getMypageData(@RequestParam("employeeId") String employeeId) {
         // SQLを書かずに、リポジトリのfindByIdメソッドを使う
         //現在、手動でマイページの切り替えテストをする予定のため、カラでも使えるOptional仕様が望ましい
         Optional<Employee> employeeOpt = employeeRepository.findById(employeeId);
