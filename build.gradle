@@ -20,15 +20,16 @@ repositories {
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
 	implementation 'org.springframework.boot:spring-boot-starter-webmvc'
+    // 以下は、Javaプログラムからデータベースに接続し、データを操作するための仕組み
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+
 	compileOnly 'org.projectlombok:lombok'
-	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-thymeleaf-test'
 	testImplementation 'org.springframework.boot:spring-boot-starter-webmvc-test'
 	testCompileOnly 'org.projectlombok:lombok'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 	testAnnotationProcessor 'org.projectlombok:lombok'
-	//以下を追加すると、VScodeならば、拡張パックの案内をされるのでGradle for Javaを入れる
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     //データベースとの連携のために以下の1行を追加
 	implementation 'com.h2database:h2'
