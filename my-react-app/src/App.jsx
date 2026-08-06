@@ -3,18 +3,33 @@ import { useState, useEffect } from 'react'
 import './App.css'
 
 function App() {
-  const [message, setMessage] = useState('')
+  const [employee, setEmployee] = useState(null)
+  const [errorMsg, setErrorMsg] = useState('')
 
+  // マイページ取得（動作確認用：サンプル社員E001で固定）
   useEffect(() => {
-    fetch('http://localhost:8080/学習中')
-      .then(res => res.text())
-      .then(data => setMessage(data))
-  }, [])
+    fetch('http://localhost:8080/api/mypage?employeeId=E001', { credentials: 'include' })
+      .then(res => res.json())
+      .then(data => {
+        if (data.error) {
+          setErrorMsg(data.error);
+        } else {
+          setEmployee(data);
+        }
+      });
+  }, []);
 
   return (
-    // 現在は、ExerciseControllerでの文字だけ見れる構造
     <div>
-      <p>{message}</p>
+      {errorMsg && <p>{errorMsg}</p>}
+      {employee && (
+        <div>
+          <p>社員ID：{employee.employeeId}</p>
+          <p>名前：{employee.name}</p>
+          <p>所属企業：{employee.companyName}</p>
+          <p>安否状況：{employee.safetyStatus}</p>
+        </div>
+      )}
     </div>
   )
 }
