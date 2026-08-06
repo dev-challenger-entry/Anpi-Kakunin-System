@@ -18,3 +18,4 @@ VALUES ('E002', '佐藤 美咲', 'サンプルシステムズ（営業部）', '
 
 INSERT INTO employee (employee_id, name, company_name, safety_status) 
 VALUES ('E003', '鈴木 一郎', 'デモテクノロジー（人事部）', '未回答');
+

@@ -35,6 +35,9 @@ dependencies {
 	implementation 'com.h2database:h2'
     //.envファイル（環境変数を書き込んだ設定ファイル）を自動的に読み込めるようにする拡張ツール（ライブラリ）
 	implementation 'me.paulschwarz:spring-dotenv:4.0.0'
+	//マイページの実装は出来たが、バックエンドがサンプル社員データを見つけられていない状況を打開するための依存関係
+	implementation 'org.springframework.boot:spring-boot-h2console'
+	
 }
 
 tasks.named('test') {
