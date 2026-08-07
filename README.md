@@ -73,6 +73,11 @@ Eclipseを開く
 
 　　　npm create vite@latest my-react-app -- --template react
 
+ただし、このコマンドは最初の１回だけする。
+以後の開発では使用しない。
+　　　npm run dev
+開発中はこちらを使うこと。
+
 .........................................
 
 **詳細設計について**
