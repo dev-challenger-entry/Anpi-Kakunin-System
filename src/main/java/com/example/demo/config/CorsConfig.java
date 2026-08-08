@@ -1,4 +1,4 @@
-package com.example.demo;
+package com.example.demo.config;
 //Spring Bootは起動時にこのアノテーションが付いたクラスを読み込み、アプリケーションの設定としてシステムに反映させます。
 import org.springframework.context.annotation.Configuration;
 //CORSの設定情報を登録・管理する（Registry）ためのクラス
