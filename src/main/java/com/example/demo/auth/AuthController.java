@@ -1,4 +1,4 @@
-package com.example.demo;
+package com.example.demo.auth;
 
 import com.example.demo.mypage.Employee;
 import com.example.demo.mypage.EmployeeRepository;
