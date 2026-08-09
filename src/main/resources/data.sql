@@ -1,12 +1,12 @@
---テーブルがなければ作成する
+SET NAMES utf8mb4;
+
 CREATE TABLE IF NOT EXISTS employee (
     employee_id VARCHAR(50) PRIMARY KEY,
     name VARCHAR(100),
     company_name VARCHAR(100),
     safety_status VARCHAR(50)
-);
+)ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- 既存のデータを一度消す（エラー防止）
 DELETE FROM employee;
 
 -- サンプル社員データの登録
@@ -18,4 +18,3 @@ VALUES ('E002', '佐藤 美咲', 'サンプルシステムズ（営業部）', '
 
 INSERT INTO employee (employee_id, name, company_name, safety_status) 
 VALUES ('E003', '鈴木 一郎', 'デモテクノロジー（人事部）', '未回答');
-
