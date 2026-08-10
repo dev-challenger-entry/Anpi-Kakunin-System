@@ -36,8 +36,6 @@ dependencies {
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     //.envファイル（環境変数を書き込んだ設定ファイル）を自動的に読み込めるようにする拡張ツール（ライブラリ）
 	implementation 'me.paulschwarz:spring-dotenv:4.0.0'
-	//マイページの実装は出来たが、バックエンドがサンプル社員データを見つけられていない状況を打開するための依存関係
-	implementation 'org.springframework.boot:spring-boot-h2console'
 	//パスワードをハッシュ化させるために以下の依存関係を追加する必要がある
 	implementation 'org.springframework.security:spring-security-crypto'
     //ビルドツール Gradle において、MySQL データベースへ接続するための公式 JDBC ドライバ（MySQL Connector/J）を依存関係に追加する記述

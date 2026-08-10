@@ -15,7 +15,7 @@ public class SetupDefaultPasswords {
     //開発中だけ作動するようなアノテーション
     @Profile("dev")
     //メソッド名：デフォルトパスワードをセットアップする
-    CommandLineRunner setupDefaultPasswords(EmployeeRepository repo, PasswordEncoder encoder) {
+    CommandLineRunner initDefaultPasswords(EmployeeRepository repo, PasswordEncoder encoder) {
         return args -> {
 // 修正後（.envに未定義ならエラーにする、または警告を出すなど）
 String defaultPassword = System.getProperty("SEED_PASSWORD");

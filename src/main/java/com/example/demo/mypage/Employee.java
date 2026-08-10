@@ -19,6 +19,10 @@ public class Employee {
     @Column(name = "safety_status")
     private String safetyStatus;
 
+    //パスワード関係
+    @Column(name = "password_hash")
+    private String passwordHash;
+
     private String name;
 
     // ─── ゲッターとセッター（JPAの動作に必須です） ───
@@ -33,4 +37,9 @@ public class Employee {
 
     public String getSafetyStatus() { return safetyStatus; }
     public void setSafetyStatus(String safetyStatus) { this.safetyStatus = safetyStatus; }
+
+    //パスワード関係
+    public String getPasswordHash() { return passwordHash; }
+    public void setPasswordHash(String passwordHash) { this.passwordHash = passwordHash; }
+
 }
