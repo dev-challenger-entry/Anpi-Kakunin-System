@@ -56,7 +56,9 @@ public class LocalUrlLogger {
                 
                 ----------------------------------------------------------
                 \tApplication is running locally!
-                \tAvailable Controller URLs:
+                \tフロントエンドのURL
+                \thttp://localhost:5173/
+                \tバックエンドのURLs:
                 {}
                 ----------------------------------------------------------""",
                 urlListString);
