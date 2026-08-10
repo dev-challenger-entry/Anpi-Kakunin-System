@@ -20,7 +20,7 @@ public class StudySpringApplication {
 		try {
 			if (Files.exists(Paths.get(".env"))) {
 				Files.lines(Paths.get(".env"))
-					.map(String::trim)
+					.map(line -> line.trim())
 					.filter(line -> !line.isEmpty() && !line.startsWith("#"))
 					.forEach(line -> {
 						String[] parts = line.split("=", 2);
