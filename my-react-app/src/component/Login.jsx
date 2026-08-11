@@ -2,7 +2,8 @@ import { useState } from 'react'
 import './Login.css'
 
 function Login({ onLoginSuccess }) {
-  const [id, setId] = useState('')
+const [id, setId] = useState('')
+const [password, setPassword] = useState('') 
 
   return (
     <div className="login-card">
@@ -16,6 +17,16 @@ function Login({ onLoginSuccess }) {
           type="text"
           value={id}
           onChange={(e) => setId(e.target.value)}
+        />
+      </div>
+
+      <div className="form-group">
+        <label htmlFor="password">PASS</label>
+        <input
+          id="password"
+          type="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
         />
       </div>
 
