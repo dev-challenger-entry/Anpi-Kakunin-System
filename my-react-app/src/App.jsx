@@ -1,5 +1,4 @@
 import { useState, useEffect, useRef } from 'react'
-//今は中身がないが、今後作る予定だからインポート宣言は残す
 
 import Login from './component/Login'
 import MyPage from './component/MyPage'
