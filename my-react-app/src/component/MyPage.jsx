@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import './MyPage.css'
 
 const STATUS_OPTIONS = [
   { value: 'UNANSWERED', label: '未回答' },

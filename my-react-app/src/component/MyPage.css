@@ -1,0 +1,51 @@
+/* ==========================================
+   カード全体のレイアウト（Login.cssと統一）
+   ========================================== */
+.mypage-card,
+.complete-card {
+  max-width: 320px;
+  margin: auto;
+  padding: 20px;
+  text-align: center;
+}
+
+.mypage-card p {
+  margin-bottom: 10px;
+  text-align: left;
+}
+
+/* ==========================================
+   現在の状況（セレクト＋ボタン）
+   ========================================== */
+.status-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 16px 0;
+  text-align: left;
+}
+
+.status-row label {
+  width: 90px;
+  font-size: 14px;
+}
+
+.mypage-card select {
+  flex: 1;
+  border: 1px solid #999;
+  border-radius: 3px;
+  padding: 6px 8px;
+}
+
+.mypage-card button {
+  background-color: #f4a6a6;
+  border: none;
+  border-radius: 4px;
+  padding: 10px 20px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.mypage-card button:hover {
+  background-color: #ef8b8b;
+}
