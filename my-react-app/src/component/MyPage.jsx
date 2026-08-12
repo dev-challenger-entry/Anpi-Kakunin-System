@@ -17,7 +17,7 @@ function MyPage({ employeeId }) {
   const [screen, setScreen] = useState('mypage'); // 'mypage' | 'complete'
 
   useEffect(() => {
-    fetch(`http://localhost:8080/api/mypage?employeeId=E001`, { credentials: 'include' })
+    fetch(`http://localhost:8080/api/mypage?employeeId=${employeeId}`, { credentials: 'include' })
       .then(res => res.json())
       .then(data => {
         if (data.error) {
