@@ -1,2 +1,28 @@
-/* App.css の中身は今は空でOK。今は何も参照する要素がない */
+/* ==========================================
+   カード全体のレイアウト
+   ========================================== */
+.system-header {
+  max-width: 320px;
+  /* 下のマージンを触ると、個別ページのデザインとの間隔を調整可能 */
+  margin: 40px auto 0;
+  padding: 20px;
+  text-align: center;
+}
+
+
+/* ==========================================
+   タイトル・会社名
+   ========================================== */
+.system-title {
+  font-size: 18px;
+  margin-bottom: 16px;
+}
+
+.company-name {
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  padding: 6px;
+  font-size: 14px;
+  margin-bottom: 16px;
+}
 
