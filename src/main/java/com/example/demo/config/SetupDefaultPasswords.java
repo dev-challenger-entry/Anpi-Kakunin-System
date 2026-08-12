@@ -1,28 +1,92 @@
 package com.example.demo.config;
 
+import com.example.demo.mypage.Employee;
 import com.example.demo.mypage.EmployeeRepository;
+import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.boot.CommandLineRunner;
 
 @Configuration
-// クラス名：ログインパスワードの初期化を担当する設定クラス
 public class SetupDefaultPasswords {
 
+    /*
+     * 開発環境(dev)でのみ実行する。
+     *
+     * 本番環境では初期パスワードを自動設定しない。
+     */
     @Bean
-    //開発中だけ作動するようなアノテーション
     @Profile("dev")
-    //メソッド名：デフォルトパスワードをセットアップする
-    CommandLineRunner initDefaultPasswords(EmployeeRepository repo, PasswordEncoder encoder) {
+    CommandLineRunner initDefaultPasswords(
+            EmployeeRepository repo,
+            PasswordEncoder encoder) {
+
         return args -> {
-// 修正後（.envに未定義ならエラーにする、または警告を出すなど）
-String defaultPassword = System.getProperty("SEED_PASSWORD");
-if (defaultPassword == null) {
-    // .envに書き忘れている場合は、安全のために起動を止めるか、分かりやすい警告ログを出す
-    throw new IllegalStateException(".env ファイルに SEED_PASSWORD が設定されていません！");
-}
+
+            /*
+             * 管理者用の初期パスワード。
+             *
+             * 環境変数 SEED_PASSWORD から取得する。
+             * ソースコードにはパスワードそのものを書かない。
+             */
+            String defaultPassword =
+                    System.getProperty("SEED_PASSWORD");
+
+            if (defaultPassword == null || defaultPassword.isBlank()) {
+                throw new IllegalStateException(
+                        "SEED_PASSWORD が設定されていません！");
+            }
+
+            /*
+             * 管理者アカウント
+             *
+             * IDは ADMIN001 に固定。
+             */
+            repo.findById("ADMIN001").ifPresent(admin -> {
+
+                admin.setPasswordHash(
+                        encoder.encode(defaultPassword)
+                );
+
+                repo.save(admin);
+            });
+
+            /*
+             * サンプル社員
+             *
+             * 開発用なので、サンプル社員には
+             * 管理者とは別の初期パスワードを設定する。
+             */
+            setSamplePassword(
+                    repo,
+                    encoder,
+                    "EMP001",
+                    "employee"
+            );
+
+            setSamplePassword(
+                    repo,
+                    encoder,
+                    "EMP002",
+                    "employee"
+            );
         };
+    }
+
+    private void setSamplePassword(
+            EmployeeRepository repo,
+            PasswordEncoder encoder,
+            String employeeId,
+            String password) {
+
+        repo.findById(employeeId).ifPresent(employee -> {
+
+            employee.setPasswordHash(
+                    encoder.encode(password)
+            );
+
+            repo.save(employee);
+        });
     }
 }

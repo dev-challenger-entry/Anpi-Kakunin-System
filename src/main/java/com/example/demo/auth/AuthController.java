@@ -3,8 +3,12 @@ package com.example.demo.auth;
 import com.example.demo.mypage.Employee;
 import com.example.demo.mypage.EmployeeRepository;
 
+import jakarta.servlet.http.HttpSession;
+
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import java.util.Map;
@@ -14,20 +18,60 @@ import java.util.Optional;
 @RestController
 public class AuthController {
 
-    // 1.JPAのリポジトリを定義（finalをつける）
+    // JPAのリポジトリを定義（finalをつける）
     private final EmployeeRepository employeeRepository;
+    //ユーザーが入力したパスワードを暗号化（ハッシュ化）するための道具を、
+    // クラスの中でいつでも使えるように準備している一文
+    private final PasswordEncoder passwordEncoder;
 
-    // 2. コンストラクタでインジェクションする（警告が出なくなります）
-    public AuthController(EmployeeRepository employeeRepository) {
+    // AuthControllerが動くために絶対に必要な2つの道具
+    // 社員データと暗号化を、起動時に外から受け取って
+    // セッティングするための仕組み
+    public AuthController(
+        EmployeeRepository employeeRepository,
+        PasswordEncoder passwordEncoder) {
         this.employeeRepository = employeeRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     // 1. ログイン用の最低限の道（変更なし）
     @PostMapping("/api/login")
-    public Map<String, Object> login() {
+    public Map<String, Object> login(
+    @RequestBody LoginRequest request,
+         HttpSession session) {
+
         Map<String, Object> res = new HashMap<>();
-        res.put("success", true);
+
+    // IDから社員を検索
+    Employee employee = employeeRepository
+     .findById(request.getEmployeeId())
+     .orElse(null);
+
+    // 社員が存在しない
+    if (employee == null) {
+        res.put("success", false);
+        res.put("message", "IDまたはパスワードが違います");
         return res;
+    }
+
+        // パスワードチェック
+    if (!passwordEncoder.matches(
+            request.getPassword(),
+            employee.getPasswordHash())) {
+
+        res.put("success", false);
+        res.put("message", "IDまたはパスワードが違います");
+        return res;
+    }
+
+    // 認証成功
+    session.setAttribute("employeeId", employee.getEmployeeId());
+    session.setAttribute("role", employee.getRole());
+
+    res.put("success", true);
+    res.put("employeeId", employee.getEmployeeId());
+   
+    return res;
     }
 
     // 2. マイページ用の最低限の道（Spring Data JPAで書き換え）

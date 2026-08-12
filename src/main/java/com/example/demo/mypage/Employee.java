@@ -4,6 +4,8 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
 @Table(name = "employee")
@@ -22,8 +24,14 @@ public class Employee {
     //パスワード関係
     @Column(name = "password_hash")
     private String passwordHash;
-
     private String name;
+
+   //管理者画面へのアクセス用
+    @Column(name = "role")
+    private String role;
+    public String getRole() { return role; }
+    public void setRole(String role) { this.role = role; }
+
 
     // ─── ゲッターとセッター（JPAの動作に必須です） ───
     public String getEmployeeId() { return employeeId; }
