@@ -5,7 +5,8 @@ CREATE TABLE IF NOT EXISTS employee (
     name VARCHAR(100),
     company_name VARCHAR(100),
     safety_status VARCHAR(50),
-    password_hash VARCHAR(255)
+    password_hash VARCHAR(255),
+    role VARCHAR(20) DEFAULT 'EMPLOYEE'
 )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 DELETE FROM employee;
@@ -17,3 +18,7 @@ INSERT INTO employee (employee_id, name, company_name, safety_status, password_h
 VALUES ('E002', '佐藤 美咲', 'サンプルシステムズ（営業部）', '無事', NULL);
 INSERT INTO employee (employee_id, name, company_name, safety_status, password_hash)
 VALUES ('E003', '鈴木 一郎', 'デモテクノロジー（人事部）', '未回答', NULL);
+
+-- 管理者専用データ
+INSERT INTO employee (employee_id, name, company_name, safety_status, password_hash, role)
+VALUES ('ADMIN001', '管理者', '運営事務局', NULL, NULL, 'ADMIN');
