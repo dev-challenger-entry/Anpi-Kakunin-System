@@ -14,8 +14,8 @@ public class Employee {
     @Column(name = "employee_id")
     private String employeeId;
 
-    //SQLの項目名（company_name, safety_status）に合わせて追加・修正
-    @Column(name = "company_name")
+    //SQLの項目名（section_name, safety_status）に合わせて追加・修正
+    @Column(name = "section_name")
     private String companyName;
 
     @Column(name = "safety_status")
