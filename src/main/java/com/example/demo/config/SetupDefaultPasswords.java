@@ -61,14 +61,14 @@ public class SetupDefaultPasswords {
             setSamplePassword(
                     repo,
                     encoder,
-                    "EMP001",
+                    "E001",
                     "employee"
             );
 
             setSamplePassword(
                     repo,
                     encoder,
-                    "EMP002",
+                    "E002",
                     "employee"
             );
         };
