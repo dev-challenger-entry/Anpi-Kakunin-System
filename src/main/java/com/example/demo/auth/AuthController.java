@@ -55,7 +55,9 @@ public class AuthController {
     }
 
         // パスワードチェック
-    if (!passwordEncoder.matches(
+        //データベースにパスワードが登録されていない（値が null である）不完全なアカウントを使って、
+        // 不正にログインされたりシステムがクラッシュしたりするのを防ぐ部分を追加
+    if (employee.getPasswordHash() == null ||!passwordEncoder.matches(
             request.getPassword(),
             employee.getPasswordHash())) {
 
