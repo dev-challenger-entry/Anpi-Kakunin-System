@@ -72,7 +72,8 @@ public class AuthController {
 
     res.put("success", true);
     res.put("employeeId", employee.getEmployeeId());
-   
+    res.put("role", employee.getRole());
+
     return res;
     }
 

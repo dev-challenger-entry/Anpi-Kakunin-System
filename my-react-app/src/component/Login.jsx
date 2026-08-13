@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import './Login.css'
+import './login.css'
 
 function Login({ onLoginSuccess }) {
 const [id, setId] = useState('')
@@ -24,7 +24,7 @@ const handleLogin = async () => {
 
      //ログインの合否（結果）に応じて、画面の表示を切り替える条件分岐とエラー処理
     if (data.success) {
-        onLoginSuccess(data.employeeId)
+       onLoginSuccess(data.employeeId, data.role)
       } else {
         setErrorMsg(data.message || 'ログインに失敗しました')
       }

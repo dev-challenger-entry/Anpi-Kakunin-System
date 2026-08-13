@@ -27,15 +27,15 @@ public class SetupDefaultPasswords {
             /*
              * 管理者用の初期パスワード。
              *
-             * 環境変数 SEED_PASSWORD から取得する。
+             * 環境変数 ADMIN_PASSWORD から取得する。
              * ソースコードにはパスワードそのものを書かない。
              */
             String defaultPassword =
-                    System.getProperty("SEED_PASSWORD");
+                    System.getProperty("ADMIN_PASSWORD");
 
             if (defaultPassword == null || defaultPassword.isBlank()) {
                 throw new IllegalStateException(
-                        "SEED_PASSWORD が設定されていません！");
+                        "ログインIDまたはパスワードが正しくありません");
             }
 
             /*
