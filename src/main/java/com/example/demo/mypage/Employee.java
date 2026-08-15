@@ -1,5 +1,7 @@
 package com.example.demo.mypage;
 
+import java.time.LocalDateTime;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -9,45 +11,35 @@ import lombok.Setter;
 
 @Entity
 @Table(name = "employees")
+@Getter
+@Setter
 public class Employee {
+
     @Id
     @Column(name = "employee_id")
     private String employeeId;
 
-    //SQLの項目名（section_name, safety_status）に合わせて追加・修正
+    @Column(name = "name")
+    private String name;
+
     @Column(name = "section_name")
-    private String companyName;
+    private String sectionName;
 
     @Column(name = "safety_status")
     private String safetyStatus;
 
-    //パスワード関係
     @Column(name = "password_hash")
     private String passwordHash;
-    private String name;
 
-   //管理者画面へのアクセス用
-    @Column(name = "role")
+    @Column(name = "role", nullable = false)
     private String role;
-    public String getRole() { return role; }
-    public void setRole(String role) { this.role = role; }
 
+    @Column(name = "answered_time")
+    private LocalDateTime answeredTime;
 
-    // ─── ゲッターとセッター（JPAの動作に必須です） ───
-    public String getEmployeeId() { return employeeId; }
-    public void setEmployeeId(String employeeId) { this.employeeId = employeeId; }
+    @Column(name = "email")
+    private String email;
 
-    public String getName() { return name; }
-    public void setName(String name) { this.name = name; }
-
-    public String getCompanyName() { return companyName; }
-    public void setCompanyName(String companyName) { this.companyName = companyName; }
-
-    public String getSafetyStatus() { return safetyStatus; }
-    public void setSafetyStatus(String safetyStatus) { this.safetyStatus = safetyStatus; }
-
-    //パスワード関係
-    public String getPasswordHash() { return passwordHash; }
-    public void setPasswordHash(String passwordHash) { this.passwordHash = passwordHash; }
-
+    @Column(name = "email2")
+    private String email2;
 }

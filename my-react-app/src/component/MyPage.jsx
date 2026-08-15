@@ -59,7 +59,7 @@ function MyPage({ employeeId }) {
 
       {employee && screen === 'mypage' && (
         <div className="mypage-card">
-          <p>【{employee.companyName}】</p>
+          <p>【{employee.sectionName}】</p>
           <p>社員名：{employee.name}</p>
 
           <label>現在の状況</label>
