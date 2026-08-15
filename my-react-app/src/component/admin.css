@@ -1,0 +1,70 @@
+.admin-card {
+  max-width: 420px;
+  margin: 20px auto 0;
+  padding: 20px;
+}
+
+.admin-title {
+  text-align: center;
+  font-size: 24px;
+  margin-bottom: 16px;
+}
+
+.admin-error {
+  color: #b85450;
+  text-align: center;
+}
+
+.admin-table {
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.admin-table-header {
+  display: flex;
+  font-weight: bold;
+  background-color: #dae8fc;
+  border-bottom: 1px solid #6c8ebf;
+  color: #333;
+}
+
+.admin-col-status,
+.admin-col-people {
+  padding: 8px;
+  text-align: center;
+}
+
+.admin-col-status { width: 35%; }
+.admin-col-people { width: 65%; }
+
+.admin-table-row {
+  display: flex;
+  border-top: 1px solid #ccc;
+}
+
+.admin-status-cell {
+  width: 35%;
+  padding: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+}
+
+.admin-people-cell {
+  width: 65%;
+  padding: 8px;
+  background-color: #fff;
+}
+
+.admin-people-list {
+  margin-top: 4px;
+  font-size: 13px;
+  color: #555;
+}
+
+.status-safe { background-color: #e8f5e9; color: #2e7031; border-right: 3px solid #82b366; }
+.status-evacuated { background-color: #fff9e6; color: #8a6d1f; border-right: 3px solid #d6b656; }
+.status-unable { background-color: #fff0e6; color: #a35a00; border-right: 3px solid #d79b00; }
+.status-unanswered { background-color: #fce4ec; color: #8a2b2b; border-right: 3px solid #b85450; }
