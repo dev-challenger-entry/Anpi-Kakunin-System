@@ -30,13 +30,13 @@ public class AdminController {
     @GetMapping("/status-summary")
     public ResponseEntity<Map<String, Long>> getStatusSummary() {
         // フロントのSTATUS_OPTIONSと完全一致させる
-        String[] allStatuses = { "UNANSWERED", "SAFE", "EVACUATED", "UNABLE_TO_COMMUTE" };
+        String[] allStatuses = { "未回答", "無事です", "避難しました", "出勤困難" };
         Map<String, Long> summary = new LinkedHashMap<>();
         for (String s : allStatuses) {
             summary.put(s, 0L); // 0人のステータスも表示されるように初期化
         }
         for (Employee e : employeeRepository.findAll()) {
-            String status = (e.getSafetyStatus() == null) ? "UNANSWERED" : e.getSafetyStatus();
+            String status = (e.getSafetyStatus() == null) ? "未回答" : e.getSafetyStatus();
             Long current = summary.getOrDefault(status, 0L);
             summary.put(status, current + 1L);
         }

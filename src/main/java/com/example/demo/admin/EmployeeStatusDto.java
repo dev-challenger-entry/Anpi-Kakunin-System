@@ -10,8 +10,8 @@ public class EmployeeStatusDto {
         this.employeeId = employeeId;
         this.name = name;
         this.companyName = companyName;
-        // DB上でNULLの社員（未回答）はフロントの選択肢に合わせてUNANSWERED扱いにする
-        this.safetyStatus = (safetyStatus == null) ? "UNANSWERED" : safetyStatus;
+        // DB上でNULLの社員（未回答）はフロントの選択肢に合わせた初期表示
+        this.safetyStatus = (safetyStatus == null) ? "未回答" : safetyStatus;
     }
 
     public String getEmployeeId() { return employeeId; }
