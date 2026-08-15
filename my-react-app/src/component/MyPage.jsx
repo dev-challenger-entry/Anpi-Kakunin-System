@@ -2,10 +2,10 @@ import { useState, useEffect } from 'react'
 import './mypage.css'
 
 const STATUS_OPTIONS = [
-  { value: 'UNANSWERED', label: '未回答' },
-  { value: 'SAFE', label: '無事です' },
-  { value: 'EVACUATED', label: '避難しました' },
-  { value: 'UNABLE_TO_COMMUTE', label: '出勤困難' },
+  { value: '未回答', label: '未回答' },
+  { value: '無事です', label: '無事です' },
+  { value: '避難しました', label: '避難しました' },
+  { value: '出勤困難', label: '出勤困難' },
 ];
 
 const getLabel = (value) => STATUS_OPTIONS.find(opt => opt.value === value)?.label ?? value;
