@@ -58,7 +58,7 @@ public class LocalUrlLogger {
                 \tApplication is running locally!
                 \tフロントエンドのURL
                 \thttp://localhost:5173/
-                \tバックエンドのURLs:
+                \tバックエンドAPI一覧（http://localhost:8080）※GET/POST/PUT混在:
                 {}
                 ----------------------------------------------------------""",
                 urlListString);

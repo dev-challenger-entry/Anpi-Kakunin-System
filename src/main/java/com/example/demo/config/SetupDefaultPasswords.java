@@ -1,6 +1,5 @@
 package com.example.demo.config;
 
-import com.example.demo.mypage.Employee;
 import com.example.demo.mypage.EmployeeRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
