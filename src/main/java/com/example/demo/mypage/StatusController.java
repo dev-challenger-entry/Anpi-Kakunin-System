@@ -41,12 +41,13 @@ public class StatusController {
        // 回答日時を記録するため、現在日時を取得
             LocalDateTime answeredTime = LocalDateTime.now();
        
-            jdbcTemplate.update(
-            "UPDATE employees" + "SET safety_status = ?, answered_time = ? " +
-            "WHERE employee_id = ?",
-            request.getStatus(),
-            userId
-        );
+      jdbcTemplate.update(
+        "UPDATE employees SET safety_status = ?, answered_time = ? " +
+        "WHERE employee_id = ?",
+        request.getStatus(),
+        answeredTime,
+        userId
+       );
         return ResponseEntity.ok(request.getStatus());
     }
 }
