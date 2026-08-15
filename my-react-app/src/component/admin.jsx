@@ -2,10 +2,10 @@ import { useState, useEffect } from 'react'
 import './admin.css'
 
 const STATUS_META = [
-  { value: '無事です', className: 'status-safe' },
-  { value: '避難しました', className: 'status-evacuated' },
-  { value: '出勤困難', className: 'status-unable' },
-  { value: '未回答', className: 'status-unanswered' },
+  { value: '無事です', label: '無事です', className: 'status-safe' },
+  { value: '避難しました', label: '避難しました', className: 'status-evacuated' },
+  { value: '出勤困難', label: '出勤困難', className: 'status-unable' },
+  { value: '未回答', label: '未回答', className: 'status-unanswered' },
 ]
 
 function AdminStatusSummary() {
