@@ -34,6 +34,14 @@ const handleLogin = async () => {
     }
   }
 
+    // ログイン失敗時：ワイヤーフレーム通り、入力フォームは表示せずエラーのみの画面にする
+  if (errorMsg) {
+    return (
+      <div className="login-error-screen">
+        <p className="login-error-message">{errorMsg}</p>
+      </div>
+    )
+  }
 
   return (
     <>

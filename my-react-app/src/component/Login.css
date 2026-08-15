@@ -46,3 +46,18 @@
   border-radius: 3px;
   padding: 6px 8px;
 }
+
+/* ==========================================
+   ログインエラー画面
+   ========================================== */
+.login-error-screen {
+  max-width: 258px;
+  margin: 40px auto 0;
+  text-align: left;
+}
+
+.login-error-message {
+  color: #ff3333;
+  font-size: 12px;
+}
+
