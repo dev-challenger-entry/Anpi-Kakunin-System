@@ -7,10 +7,16 @@ const STATUS_META = [
   { value: '出勤困難', label: '出勤困難', className: 'status-unable' },
   { value: '未回答', label: '未回答', className: 'status-unanswered' },
 ]
-
-function AdminStatusSummary() {
+// 社員情報登録・変更画面、管理者情報変更画面への遷移用に、
+// 親コンポーネント（App.jsx）から遷移関数を props として受け取る
+function AdminStatusSummary({ onNavigateToEmployeeManage, onNavigateToAdminSettings }) {
+ // ステータスごとの集計人数（例：{ "無事です": 2, "未回答": 1, ... }）を保持する
   const [summary, setSummary] = useState({})
+  // ステータスごとに、該当する社員名の一覧をまとめて保持する
+  // 例：{ "無事です": ["山田 太郎", "佐藤 美咲"], "未回答": ["鈴木 一郎"] }
   const [employeesByStatus, setEmployeesByStatus] = useState({})
+    // データ取得（集計API・社員一覧API）が失敗した場合に、
+  // 画面へ表示するエラーメッセージを保持する
   const [errorMsg, setErrorMsg] = useState('')
 
   useEffect(() => {
@@ -63,6 +69,18 @@ function AdminStatusSummary() {
           </div>
         ))}
       </div>
+
+        <div style={{ marginTop: '16px', textAlign: 'center' }}>
+        <button onClick={onNavigateToEmployeeManage}>社員情報の変更</button>
+        <button onClick={onNavigateToAdminSettings} style={{ marginLeft: '8px' }}>
+          管理者情報変更
+        </button>
+        
+      </div>
+
+
+
+
     </div>
   )
 }

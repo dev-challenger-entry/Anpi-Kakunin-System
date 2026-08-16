@@ -5,6 +5,8 @@ import Login from './component/login'
 import MyPage from './component/mypage'
 import AdminStatusSummary from './component/admin'
 import Recaptcha from './component/recaptcha'
+import EmployeeManage from './component/employeeManage'
+import AdminSettings from './component/adminSettings'
 
 // App.jsx用のCSS
 import './App.css'
@@ -21,6 +23,10 @@ function App() {
 
   //管理者が、確認画面(CAPTCHA）を突破したかどうか
   const [captchaVerified, setCaptchaVerified] = useState(false)
+
+  // 管理者画面内でどの画面を表示するかを管理する
+  // 'summary'（集計結果） | 'employeeManage'（社員情報登録・変更） | 'adminSettings'（管理者情報変更）
+  const [adminView, setAdminView] = useState('summary')
 
   // Loginコンポーネントから呼び出される
   // ログイン成功時に社員IDと権限を受け取る
