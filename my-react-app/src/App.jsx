@@ -40,6 +40,38 @@ function App() {
     setCaptchaVerified(true)
   }
 
+   // 三項演算子のネストは読みにくいのでifにした
+  const renderMainContent = () => {
+    // ① 未ログイン
+    if (!loggedInEmployeeId) {
+      return <Login onLoginSuccess={handleLoginSuccess} />
+    }
+
+    // ② ログイン済み・一般社員
+    if (role !== 'ADMIN') {
+      return <MyPage employeeId={loggedInEmployeeId} />
+    }
+
+    // ③ ログイン済み・管理者・CAPTCHA未認証
+    if (!captchaVerified) {
+      return <Recaptcha onSuccess={handleCaptchaSuccess} />
+    }
+
+    // ④ ログイン済み・管理者・CAPTCHA認証済み → adminView で画面切り替え
+    if (adminView === 'employeeManage') {
+      return <EmployeeManage onBack={() => setAdminView('summary')} />
+    }
+    if (adminView === 'adminSettings') {
+      return <AdminSettings onBack={() => setAdminView('summary')} />
+    }
+    return (
+      <AdminStatusSummary
+        onNavigateToEmployeeManage={() => setAdminView('employeeManage')}
+        onNavigateToAdminSettings={() => setAdminView('adminSettings')}
+      />
+    )
+  }
+
   return (
     <>
       <div className="system-header">
@@ -51,30 +83,8 @@ function App() {
           サンプル企業
         </div>
       </div>
-
-
-      {/* ログイン状態・権限によって表示する画面を切り替える */}
-      <div>
-
-        {/* まだログインしていない場合 → ログイン画面 */} 
-
-         {!loggedInEmployeeId ? (
-          <Login onLoginSuccess={handleLoginSuccess} />
-          /* ログイン済み ＋ ADMINの場合 → CAPTCHA認証を確認 */
-          ) : role === 'ADMIN' ? (
-          captchaVerified ? (
-          /* CAPTCHA認証済み → 管理者画面 */
-          <AdminStatusSummary />
-          ) : (
-           /* CAPTCHA未認証 → CAPTCHA画面 */
-          <Recaptcha onSuccess={handleCaptchaSuccess} />
-          )
-          ) : (
-            /* ADMINではない場合 → マイページ */
-          <MyPage employeeId={loggedInEmployeeId} />
-          )}
-
-      </div>
+    {/* 現在の状態に応じて「どのコンポーネントを表示するか」を決定し、その結果を画面に描画する */}
+    {renderMainContent()}
 
     </>
   )
