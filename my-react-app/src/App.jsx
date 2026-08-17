@@ -40,37 +40,42 @@ function App() {
     setCaptchaVerified(true)
   }
 
-   // 三項演算子のネストは読みにくいのでifにした
-  const renderMainContent = () => {
-    // ① 未ログイン
-    if (!loggedInEmployeeId) {
-      return <Login onLoginSuccess={handleLoginSuccess} />
-    }
-
-    // ② ログイン済み・一般社員
-    if (role !== 'ADMIN') {
-      return <MyPage employeeId={loggedInEmployeeId} />
-    }
-
-    // ③ ログイン済み・管理者・CAPTCHA未認証
-    if (!captchaVerified) {
-      return <Recaptcha onSuccess={handleCaptchaSuccess} />
-    }
-
-    // ④ ログイン済み・管理者・CAPTCHA認証済み → adminView で画面切り替え
-    if (adminView === 'employeeManage') {
-      return <EmployeeManage onBack={() => setAdminView('summary')} />
-    }
-    if (adminView === 'adminSettings') {
-      return <AdminSettings onBack={() => setAdminView('summary')} />
-    }
-    return (
-      <AdminStatusSummary
-        onNavigateToEmployeeManage={() => setAdminView('employeeManage')}
-        onNavigateToAdminSettings={() => setAdminView('adminSettings')}
-      />
-    )
+const renderMainContent = () => {
+  // ① 未ログイン
+  // → ここは「ログインしているかどうか」という単発の条件なので、switch化はしない
+  if (!loggedInEmployeeId) {
+    return <Login onLoginSuccess={handleLoginSuccess} />
   }
+
+  // ② ログイン済み・一般社員
+  // → roleが'ADMIN'かどうかの単発条件。switchにする意味がない
+  if (role !== 'ADMIN') {
+    return <MyPage employeeId={loggedInEmployeeId} />
+  }
+
+  // ③ ログイン済み・管理者・CAPTCHA未認証
+  // → captcha認証済みかどうかの単発条件。これもswitch向きではない
+  if (!captchaVerified) {
+    return <Recaptcha onSuccess={handleCaptchaSuccess} />
+  }
+
+  // ④ ログイン済み・管理者・CAPTCHA認証済み → adminViewの値で管理者画面を切り替える
+  // → ここは「adminViewという1つの変数の値」による分岐なので、switchに向いている
+  switch (adminView) {
+    case 'employeeManage':
+      return <EmployeeManage onBack={() => setAdminView('summary')} />
+    case 'adminSettings':
+      return <AdminSettings onBack={() => setAdminView('summary')} />
+    // 'summary'および想定外の値の場合はここに落ちる
+    default:
+      return (
+        <AdminStatusSummary
+          onNavigateToEmployeeManage={() => setAdminView('employeeManage')}
+          onNavigateToAdminSettings={() => setAdminView('adminSettings')}
+        />
+      )
+  }
+}
 
   return (
     <>
