@@ -8,6 +8,9 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 //コントローラー（主に@Controllerや@RestController）の処理の前後に割り込むための仕組み
 import org.springframework.web.servlet.HandlerInterceptor;
+import org.springframework.web.servlet.HandlerMapping;
+
+import java.util.Map;
 
 public class SessionAuthInterceptor implements HandlerInterceptor {
 
@@ -50,6 +53,31 @@ public class SessionAuthInterceptor implements HandlerInterceptor {
             response.setContentType("application/json;charset=UTF-8");
             response.getWriter().write("{\"success\":false,\"message\":\"権限がありません\"}");
             return false;
+        }
+
+
+        // ③ 他のアカウント保持者のマイページを覗けないようにする
+        // 自分のアカウント以外のマイページへのアクセスを禁止する
+         @SuppressWarnings("unchecked")//Javaに警告出るのは開発者は分かっているから無視してというアノテーション
+          Map<String, String> uriVars =
+                   (Map<String, String>) request.getAttribute(
+                           HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE
+                   );
+        // uriVars = 「APIエンドポイントのパスに含まれる変数を格納したもの」
+        // uriVarsが存在し、かつ「userId」というパス変数がある場合
+        if (uriVars != null
+                && uriVars.containsKey("userId")){
+
+            String targetId = uriVars.get("userId");
+              //「ログインしている本人のIDと、アクセスしようとしている対象者のIDが違うなら403を返す」
+            if (!employeeId.equals(targetId)) {
+                response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+                response.setContentType("application/json;charset=UTF-8");
+                response.getWriter().write(
+                        "{\"success\":false,\"message\":\"アクセス権がありません\"}"
+                );
+                return false;
+            }
         }
 
         return true;
