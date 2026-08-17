@@ -13,7 +13,12 @@ public class SessionAuthInterceptor implements HandlerInterceptor {
             HttpServletResponse response,
             Object handler) throws Exception {
 
-        HttpSession session = request.getSession(false);
+           // CORSのPreflight（事前確認）は認証チェックせず通す
+    if ("OPTIONS".equalsIgnoreCase(request.getMethod())) {
+        return true;
+     }
+
+       HttpSession session = request.getSession(false);
 
         String employeeId = (session != null)
                 ? (String) session.getAttribute("employeeId")
