@@ -35,6 +35,13 @@ function App() {
     setRole(role)
   }
 
+    const handleLogout = () => {
+    setLoggedInEmployeeId(null)
+    setRole(null)
+    setCaptchaVerified(false)
+    setAdminView('summary')
+  }
+
    //ログイン後に認証状態を保持
   const handleCaptchaSuccess = () => {
     setCaptchaVerified(true)
@@ -50,7 +57,7 @@ const renderMainContent = () => {
   // ② ログイン済み・一般社員
   // → roleが'ADMIN'かどうかの単発条件。switchにする意味がない
   if (role !== 'ADMIN') {
-    return <MyPage employeeId={loggedInEmployeeId} />
+    return <MyPage employeeId={loggedInEmployeeId}  onLogout={handleLogout} />
   }
 
   // ③ ログイン済み・管理者・CAPTCHA未認証

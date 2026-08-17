@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-function Logout() {
+function Logout({ onLogoutSuccess }) {
     const [message, setMessage] = useState('');
 
     const handleLogout = async () => {
@@ -12,6 +12,10 @@ function Logout() {
 
             if (response.ok) {
                 setMessage('ログアウトしました');
+              // 親（App.jsx）へ成功を知らせる。ここでApp側のログイン状態がリセットされる
+                if (onLogoutSuccess) {
+                    onLogoutSuccess();
+                }
             } else {
                 setMessage('ログアウトに失敗しました');
             }

@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react'
 import './mypage.css'
+import Logout from './LogOut'
+
 
 // 安否状況の選択肢一覧
 // value: DBやAPIとやり取りする実際の値（日本語文字列で統一）
@@ -15,7 +17,7 @@ const STATUS_OPTIONS = [
 // 万が一STATUS_OPTIONSに存在しない値が来た場合は、そのままvalueを表示する（?? value）
 const getLabel = (value) => STATUS_OPTIONS.find(opt => opt.value === value)?.label ?? value;
 
-function MyPage({ employeeId }) {
+function MyPage({ employeeId, onLogout }) {
   // マイページ取得APIから返ってきた社員情報（name, sectionName, safetyStatusなど）を保持する
   // 初期値はnull＝まだ何も取得できていない状態
   const [employee, setEmployee] = useState(null);
@@ -113,8 +115,9 @@ const handleSubmit = async () => {
               </option>
             ))}
           </select>
-
           <button onClick={handleSubmit}>送信</button>
+
+          <Logout onLogoutSuccess={onLogout} />
         </div>
       )}
 
@@ -124,6 +127,7 @@ const handleSubmit = async () => {
           <p>安否確認報告終了です。</p>
           <p>送信内容</p>
           <p>{getLabel(employee.safetyStatus)}</p>
+          <Logout onLogoutSuccess={onLogout} />
         </div>
       )}
     </div>
