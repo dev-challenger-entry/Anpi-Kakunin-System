@@ -123,13 +123,26 @@ function AdminStatusSummary({ onNavigateToEmployeeManage, onNavigateToAdminSetti
       </div>
 
       {/* 画面遷移用のボタン群 */}
-      <div style={{ marginTop: '16px', textAlign: 'center' }}>
-        {/* 押すと、親から渡された関数を実行し、社員情報登録・変更画面へ遷移する */}
-        <button onClick={onNavigateToEmployeeManage}>社員情報の変更</button>
-        {/* 押すと、親から渡された関数を実行し、管理者情報変更画面へ遷移する */}
-        <button onClick={onNavigateToAdminSettings} style={{ marginLeft: '8px' }}>
-          管理者情報変更
+      <div className="navigation-buttons">
+
+        {/* 社員情報登録・変更画面へ遷移 */}
+        <button
+          type="button"
+          className="navigation-button employee-manage-button  mt-large"
+          onClick={onNavigateToEmployeeManage}
+        >
+          社員情報の登録・変更はこちらへ
         </button>
+
+        {/* 管理者情報変更画面へ遷移 */}
+        <button
+          type="button"
+          className="navigation-button admin-settings-button  mt-large"
+          onClick={onNavigateToAdminSettings}
+        >
+          管理者情報変更はこちらへ
+        </button>
+
       </div>
     </div>
   )

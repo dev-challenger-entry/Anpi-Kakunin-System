@@ -68,3 +68,41 @@
 .status-evacuated { background-color: #fff9e6; color: #8a6d1f; border-right: 3px solid #d6b656; }
 .status-unable { background-color: #fff0e6; color: #a35a00; border-right: 3px solid #d79b00; }
 .status-unanswered { background-color: #fce4ec; color: #8a2b2b; border-right: 3px solid #b85450; }
+
+
+/* ==========================================
+   アカウント情報変更画面への遷移
+========================================== */
+
+/* ==========================================
+   画面遷移用ボタン
+ ========================================== */
+
+.navigation-buttons {
+  margin-top: 16px;
+  text-align: center;
+}
+
+/* 共通ボタン */
+.navigation-button {
+  padding: 20px 40px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  border: none;
+
+  background-color: #ffffff;
+
+  transition: background-color 0.2s;
+}
+
+/* 社員情報登録・変更ボタンは色を変える */
+.employee-manage-button {
+  color: #1e88e5;
+}
+/* 隙間を空けたい*/
+.mt-large {
+  margin-top: 50px;
+}
+
+
