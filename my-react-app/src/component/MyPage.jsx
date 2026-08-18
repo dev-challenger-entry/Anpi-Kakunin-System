@@ -216,11 +216,14 @@ function MyPage({ employeeId, onLogout }) {
           </button>
 
 
-          {/* ログアウト */}
-          <div className="mypage-logout-button">
-            <Logout onLogoutSuccess={onLogout} />
-          </div>
-
+            {/* ログアウト */}
+           <button
+              type="button"
+              className="mypage-logout-button"
+              onClick={onLogout}>
+             ここからログアウトする
+           </button>
+        
         </div>
       )}
 
@@ -245,10 +248,13 @@ function MyPage({ employeeId, onLogout }) {
           </p>
 
 
-          {/* ログアウト */}
-          <div className="mypage-logout-button">
-            <Logout onLogoutSuccess={onLogout} />
-          </div>
+            {/* ログアウト */}
+           <button
+              type="button"
+              className="mypage-logout-button"
+              onClick={onLogout}>
+             ここからログアウトする
+           </button>
 
         </div>
       )}
