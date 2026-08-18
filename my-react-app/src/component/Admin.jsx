@@ -12,7 +12,7 @@ const STATUS_META = [
 
 // 社員情報登録・変更画面、管理者情報変更画面への遷移用に、
 // 親コンポーネント（App.jsx）から遷移関数を props として受け取る
-function AdminStatusSummary({ onNavigateToEmployeeManage, onNavigateToAdminSettings }) {
+function AdminStatusSummary({ onNavigateToEmployeeManage, onNavigateToAdminSettings, onLogout }) {
 
   // ステータスごとの集計人数（例：{ "無事です": 2, "未回答": 1, ... }）を保持する
   // 初期値は空のオブジェクト（＝まだ何も取得できていない状態）
@@ -142,6 +142,15 @@ function AdminStatusSummary({ onNavigateToEmployeeManage, onNavigateToAdminSetti
         >
           管理者情報変更はこちらへ
         </button>
+
+          {/* ログアウト */}
+          <button
+            type="button"
+            className="admin-logout-button"
+            onClick={onLogout}
+       >
+          ここからログアウトする
+         </button>
 
       </div>
     </div>

@@ -77,12 +77,13 @@ const renderMainContent = () => {
               onLogout={handleLogout}
       />
 
-    // 'summary'および想定外の値の場合はここに落ちる
+    // '管理者集計画面のこと'および想定外の値の場合はここに落ちる
     default:
       return (
         <AdminStatusSummary
           onNavigateToEmployeeManage={() => setAdminView('employeeManage')}
           onNavigateToAdminSettings={() => setAdminView('adminSettings')}
+          onLogout={handleLogout}
         />
       )
   }

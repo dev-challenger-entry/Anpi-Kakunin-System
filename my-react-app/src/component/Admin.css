@@ -106,3 +106,30 @@
 }
 
 
+
+
+/* ==========================================
+   ログアウト
+   ========================================== */
+
+.admin-logout-button {
+  display: block;
+  width: 180px;
+  height: 30px;
+
+  margin: 40px auto 0;
+
+  border: 2px solid #808080;
+  border-radius: 5px;
+
+  background-color: #ffffff;
+  color: #000000;
+
+  font-size: 14px;
+
+  cursor: pointer;
+}
+
+.admin-logout-button:hover {
+  background-color: #f5f5f5;
+}
