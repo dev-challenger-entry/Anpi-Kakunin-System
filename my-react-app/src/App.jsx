@@ -1,12 +1,12 @@
 import { useState } from 'react'
 
 // 各画面のコンポーネントを読み込む
-import Login from './component/login'
-import MyPage from './component/mypage'
-import AdminStatusSummary from './component/admin'
-import Recaptcha from './component/recaptcha'
-import EmployeeManage from './component/employeeManage'
-import AdminSettings from './component/adminSettings'
+import Login from './component/Login'
+import MyPage from './component/MyPage'
+import AdminStatusSummary from './component/Admin'
+import Recaptcha from './component/ReCaptcha'
+import EmployeeManage from './component/EmployeeManage'
+import AdminSettings from './component/AdminSettings'
 
 // App.jsx用のCSS
 import './App.css'
