@@ -1,7 +1,38 @@
 import './AdminSettings.css'
 import Logout from './Logout'
 
+import { useState, useEffect } from 'react'
+
 function AdminSettings({ onBack, onLogout }) {
+
+  // 初期表示専用（変更不可）
+  const [employeeId, setEmployeeId] = useState('')
+
+  // 編集可能な項目
+  const [name, setName] = useState('')
+  const [email, setEmail] = useState('')
+  const [email2, setEmail2] = useState('')
+  const [currentPassword, setCurrentPassword] = useState('')
+  const [newPassword, setNewPassword] = useState('')
+  const [newPasswordConfirm, setNewPasswordConfirm] = useState('')
+
+  const [errorMsg, setErrorMsg] = useState('')
+  const [successMsg, setSuccessMsg] = useState('')
+
+// 初期表示：現在の管理者情報を取得
+useEffect(() => {
+  fetch('http://localhost:8080/api/admin/me', {
+    credentials: 'include'
+  })
+    .then(res => res.json())
+    .then(data => {
+      setEmployeeId(data.employeeId)
+      setName(data.name)
+      setEmail(data.email)
+    })
+}, [])
+      
+
   return (
 
      <div className="admin-settings-container">
