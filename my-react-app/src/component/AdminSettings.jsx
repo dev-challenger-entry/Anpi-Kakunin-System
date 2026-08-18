@@ -1,5 +1,5 @@
-import './adminSettings.css'
-import Logout from './LogOut'
+import './AdminSettings.css'
+import Logout from './Logout'
 
 function AdminSettings({ onBack, onLogout }) {
   return (

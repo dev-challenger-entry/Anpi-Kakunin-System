@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import './admin.css'
+import './Admin.css'
 
 // ステータスの値（DBの値）と、画面表示用のラベル・CSSクラス名をセットにした配列
 // ここに書かれている順番がそのまま画面での表示順になる
