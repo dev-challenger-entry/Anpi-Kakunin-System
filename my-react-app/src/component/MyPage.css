@@ -1,51 +1,152 @@
 /* ==========================================
-   カード全体のレイアウト（Login.cssと統一）
+   マイページ全体
    ========================================== */
+
+.mypage-container {
+  width: 100%;
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+
+/* ==========================================
+   エラーメッセージ
+   ========================================== */
+
+.mypage-error {
+  margin: 20px auto;
+  text-align: center;
+}
+
+
+/* ==========================================
+   マイページカード
+   ========================================== */
+
 .mypage-card,
 .complete-card {
-  max-width: 320px;
-  margin: auto;
+  width: 320px;
+  margin: 30px auto;
   padding: 20px;
   text-align: center;
 }
 
-.mypage-card p {
-  margin-bottom: 10px;
-  text-align: left;
-}
 
 /* ==========================================
-   現在の状況（セレクト＋ボタン）
+   社員情報
    ========================================== */
-.status-row {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin: 16px 0;
+
+.employee-info {
+  margin-bottom: 25px;
+}
+
+
+.employee-section {
+  margin: 0 0 10px;
   text-align: left;
 }
 
-.status-row label {
-  width: 90px;
+
+.employee-name {
+  margin: 0;
+  text-align: left;
+}
+
+
+/* ==========================================
+   安否状況
+   ========================================== */
+
+.safety-status {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+
+.safety-status-label {
   font-size: 14px;
 }
 
-.mypage-card select {
-  flex: 1;
+
+.safety-status-select {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 8px;
   border: 1px solid #999;
   border-radius: 3px;
-  padding: 6px 8px;
+  font-size: 14px;
 }
 
-.mypage-card button {
-  background-color: #f4a6a6;
+
+/* ==========================================
+   送信ボタン
+   ========================================== */
+
+.submit-button {
+  width: 100%;
+  padding: 10px 20px;
   border: none;
   border-radius: 4px;
-  padding: 10px 20px;
+  background-color: #f4a6a6;
   font-size: 14px;
   cursor: pointer;
 }
 
-.mypage-card button:hover {
+
+.submit-button:hover {
   background-color: #ef8b8b;
+}
+
+
+/* ==========================================
+   ログアウト
+   ========================================== */
+
+.mypage-logout-button {
+  display: block;
+  width: 180px;
+  height: 30px;
+
+  margin: 40px auto 0;
+
+  border: 2px solid #808080;
+  border-radius: 5px;
+
+  background-color: #ffffff;
+  color: #000000;
+
+  font-size: 14px;
+
+  cursor: pointer;
+}
+
+.mypage-logout-button:hover {
+  background-color: #f5f5f5;
+}
+
+/* ==========================================
+   送信完了画面
+   ========================================== */
+
+.complete-card {
+  text-align: center;
+}
+
+
+.complete-message {
+  margin-bottom: 20px;
+}
+
+
+.complete-title {
+  margin-bottom: 10px;
+}
+
+
+.complete-status {
+  margin-bottom: 20px;
+  font-weight: bold;
 }
