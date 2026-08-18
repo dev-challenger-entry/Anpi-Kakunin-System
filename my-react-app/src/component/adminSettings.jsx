@@ -94,9 +94,12 @@ function AdminSettings({ onBack, onLogout }) {
         </button>
 
         {/* ログアウト */}
-        <button className="admin-settings-logout-button">
-        <Logout onLogoutSuccess={onLogout} />
-        </button>
+           <button
+              type="button"
+              className="admin-settings-logout-button"
+              onClick={onLogout}>
+             ここからログアウトする
+           </button>
 
       </div>
 
