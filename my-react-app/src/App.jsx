@@ -70,9 +70,11 @@ const renderMainContent = () => {
   // → ここは「adminViewという1つの変数の値」による分岐なので、switchに向いている
   switch (adminView) {
     case 'employeeManage':
-      return <EmployeeManage onBack={() => setAdminView('summary')} />
     case 'adminSettings':
-      return <AdminSettings onBack={() => setAdminView('summary')} />
+      return <AdminSettings onBack={() => setAdminView('summary')} 
+              onLogout={handleLogout}
+      />
+
     // 'summary'および想定外の値の場合はここに落ちる
     default:
       return (
