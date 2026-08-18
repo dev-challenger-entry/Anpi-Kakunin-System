@@ -100,7 +100,7 @@ INSERT INTO employees (
 )
 VALUES (
     'ADMIN001',
-    '管理者',
+    '管理者サンプル',
     '運営事務局',
     NULL,
     NULL,

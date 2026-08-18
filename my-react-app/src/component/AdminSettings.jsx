@@ -67,7 +67,9 @@ useEffect(() => {
         <input
           type="text"
           className="admin-settings-input"
-          defaultValue="管理者 太郎"
+          value={name}
+          // value を渡すと編集不能になるが、以下のコードで編集可能に
+          onChange={(e) => setName(e.target.value)}
         />
 
         {/* メールアドレス */}
