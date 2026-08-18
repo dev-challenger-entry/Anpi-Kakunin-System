@@ -25,7 +25,7 @@ function AdminSettings({ onBack, onLogout }) {
         </label>
 
         <div className="admin-settings-input disabled">
-          admin001　※変更不可
+          Admin001　※変更不可
         </div>
 
         {/* 管理者名 */}
