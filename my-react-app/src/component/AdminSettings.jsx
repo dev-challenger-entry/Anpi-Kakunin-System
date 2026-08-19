@@ -38,11 +38,11 @@ useEffect(() => {
   setErrorMsg('')
   setSuccessMsg('')
 
-   // メールアドレスに@が含まれているかチェック
-  if (email && !email.includes('@')) {
-    setErrorMsg('メールアドレスに@がありません')
-    return
-  }
+// メールアドレスに@がちょうど1個あるかチェック
+     if ((email.match(/@/g) || []).length !== 1) {
+       setErrorMsg('@を1つだけ入力してください')
+       return
+      }
 
 
   try {
@@ -152,6 +152,20 @@ useEffect(() => {
           type="password"
           className="admin-settings-input"
         />
+
+        {/* エラーメッセージ */}
+        {errorMsg && (
+           <div className="admin-settings-error">
+              {errorMsg}
+           </div>
+        )}
+
+         {/* 成功メッセージ */}
+         {successMsg && (
+            <div className="admin-settings-success">
+              {successMsg}
+           </div>
+         )}
 
         {/* 変更ボタン */}
         <button className="admin-settings-change-button" onClick={handleSubmit}>
