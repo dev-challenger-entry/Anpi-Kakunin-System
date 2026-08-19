@@ -19,6 +19,11 @@ function AdminSettings({ onBack, onLogout }) {
   const [errorMsg, setErrorMsg] = useState('')
   const [successMsg, setSuccessMsg] = useState('')
 
+
+
+  const [lastSendTime, setLastSendTime] = useState('')
+  const [lastSendStatus, setLastSendStatus] = useState('')
+
 // 初期表示：現在の管理者情報を取得
 useEffect(() => {
   fetch('http://localhost:8080/api/admin/me', {
@@ -35,6 +40,14 @@ useEffect(() => {
 
 // 同じログイン中に2回以上変更する場合に備えて、前回のメッセージを消す
   const handleSubmit = async () => {
+  const sendTime = new Date().toLocaleTimeString('ja-JP', {
+  hour: '2-digit',
+  minute: '2-digit',
+  second: '2-digit'
+  })
+
+setLastSendTime(sendTime)
+
   setErrorMsg('')
   setSuccessMsg('')
 
@@ -166,6 +179,13 @@ useEffect(() => {
               {successMsg}
            </div>
          )}
+
+        {/* 最終送信日時 */}
+        {lastSendTime && (
+           <div className="admin-settings-send-time">
+            最終送信日時：{lastSendTime}
+           </div>
+        )}
 
         {/* 変更ボタン */}
         <button className="admin-settings-change-button" onClick={handleSubmit}>
