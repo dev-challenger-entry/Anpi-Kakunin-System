@@ -36,8 +36,12 @@ function MyPage({ employeeId, onLogout }) {
   // complete：送信完了画面
   const [screen, setScreen] = useState('mypage')
 
- //送信試行日時をユーザーへ提示
+  // 最終送信日時
   const [lastSendTime, setLastSendTime] = useState('')
+
+  // 送信に失敗した試行日時
+  const [failedSendTime, setFailedSendTime] = useState('')
+
 
   // 社員情報を取得
   useEffect(() => {
@@ -77,7 +81,9 @@ function MyPage({ employeeId, onLogout }) {
         setSelectedStatus(data.safetyStatus)
       })
       .catch(error => {
+
         console.error(error)
+
         setErrorMsg('社員情報の取得に失敗しました。')
       })
 
@@ -93,6 +99,10 @@ function MyPage({ employeeId, onLogout }) {
   // 安否状況の送信
   const handleSubmit = async () => {
 
+    // 前回のエラー表示を消す
+    setErrorMsg('')
+    setFailedSendTime('')
+
     try {
 
       const response = await fetch(
@@ -103,6 +113,7 @@ function MyPage({ employeeId, onLogout }) {
           headers: {
             'Content-Type': 'application/json'
           },
+          // プルダウン選択メニューで選んだものがJSONでバックエンドへ送られる
           body: JSON.stringify({
             status: selectedStatus
           })
@@ -118,37 +129,41 @@ function MyPage({ employeeId, onLogout }) {
       }
 
 
-      // 更新失敗
+      // サーバーからエラーのレスポンスが返った場合
       if (!response.ok) {
         throw new Error('更新に失敗しました')
       }
 
+// Javaから返されたJSONを1回だけ取得
+const result = await response.json()
 
-      // 更新後の安否状況
-      const updatedStatus = await response.text()
+// DBに保存した安否状況を画面に反映
+setEmployee(previousEmployee => ({
+  ...previousEmployee,
+  safetyStatus: result.status
+}))
 
+// Java/Spring Boot側でDB更新した時刻を表示
+setLastSendTime(result.answeredTime)
 
-      setEmployee(previousEmployee => ({
-        ...previousEmployee,
-        safetyStatus: updatedStatus
-      }))
-
-     // 送信時刻を記録
-       const sendTime = new Date().toLocaleTimeString('ja-JP', {
-         hour: '2-digit',
-         minute: '2-digit',
-         second: '2-digit'
-       })
-
-       setLastSendTime(sendTime)
-
-      // 送信完了画面へ
-      setScreen('complete')
+// 成功した場合だけ送信完了画面へ
+setScreen('complete')
 
     } catch (error) {
 
       console.error(error)
-      setErrorMsg('安否状況の更新に失敗しました。')
+
+      // 送信を試みた時刻を記録
+      const failedTime = new Date().toLocaleTimeString('ja-JP', {
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit'
+      })
+
+      setFailedSendTime(failedTime)
+
+      // 送信失敗メッセージを表示
+      setErrorMsg('安否状況の送信に失敗しました。')
     }
   }
 
@@ -226,14 +241,23 @@ function MyPage({ employeeId, onLogout }) {
           </button>
 
 
-            {/* ログアウト */}
-           <button
-              type="button"
-              className="mypage-logout-button"
-              onClick={onLogout}>
-             ここからログアウトする
-           </button>
-        
+          {/* 送信失敗時のみ表示 */}
+          {failedSendTime && (
+            <p className="mypage-error">
+              送信を試みました（{failedSendTime}）が、失敗しました。
+            </p>
+          )}
+
+
+          {/* ログアウト */}
+          <button
+            type="button"
+            className="mypage-logout-button"
+            onClick={onLogout}
+          >
+            ここからログアウトする
+          </button>
+
         </div>
       )}
 
@@ -257,20 +281,23 @@ function MyPage({ employeeId, onLogout }) {
             {getLabel(employee.safetyStatus)}
           </p>
 
+
           {/* 最終送信日時 */}
           {lastSendTime && (
-           <div className="admin-settings-send-time">
-            最終送信日時：{lastSendTime}
-           </div>
-           )}
+            <div className="admin-settings-send-time">
+              最終送信日時：{lastSendTime}
+            </div>
+          )}
 
-            {/* ログアウト */}
-           <button
-              type="button"
-              className="mypage-logout-button"
-              onClick={onLogout}>
-             ここからログアウトする
-           </button>
+
+          {/* ログアウト */}
+          <button
+            type="button"
+            className="mypage-logout-button"
+            onClick={onLogout}
+          >
+            ここからログアウトする
+          </button>
 
         </div>
       )}
