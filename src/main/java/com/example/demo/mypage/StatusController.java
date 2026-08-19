@@ -33,9 +33,13 @@ public class StatusController {
         private String status;
     }
 
+    // フロントから送信されたデータの受け取り完了時刻を記録
+    public record StatusUpdateResponse(String status, LocalDateTime answeredTime) {}
+
+
     //社員が安否状況を更新したことをマイページへ記憶する
     @PutMapping("/{userId}")   // クラスの@RequestMappingで既に/api/statusが付いているので、ここは{userId}だけでOK
-    public ResponseEntity<String> updateStatus(
+    public ResponseEntity<StatusUpdateResponse> updateStatus(
             @PathVariable("userId") String userId,   // employee_idはVARCHARなのでStringで受ける
             @RequestBody StatusRequest request) {
        // 回答日時を記録するため、現在日時を取得
@@ -48,6 +52,6 @@ public class StatusController {
         answeredTime,
         userId
        );
-        return ResponseEntity.ok(request.getStatus());
+        return ResponseEntity.ok(new StatusUpdateResponse(request.getStatus(), answeredTime));
     }
 }
