@@ -36,6 +36,8 @@ function MyPage({ employeeId, onLogout }) {
   // complete：送信完了画面
   const [screen, setScreen] = useState('mypage')
 
+ //送信試行日時をユーザーへ提示
+  const [lastSendTime, setLastSendTime] = useState('')
 
   // 社員情報を取得
   useEffect(() => {
@@ -131,6 +133,14 @@ function MyPage({ employeeId, onLogout }) {
         safetyStatus: updatedStatus
       }))
 
+     // 送信時刻を記録
+       const sendTime = new Date().toLocaleTimeString('ja-JP', {
+         hour: '2-digit',
+         minute: '2-digit',
+         second: '2-digit'
+       })
+
+       setLastSendTime(sendTime)
 
       // 送信完了画面へ
       setScreen('complete')
@@ -247,6 +257,12 @@ function MyPage({ employeeId, onLogout }) {
             {getLabel(employee.safetyStatus)}
           </p>
 
+          {/* 最終送信日時 */}
+          {lastSendTime && (
+           <div className="admin-settings-send-time">
+            最終送信日時：{lastSendTime}
+           </div>
+           )}
 
             {/* ログアウト */}
            <button
