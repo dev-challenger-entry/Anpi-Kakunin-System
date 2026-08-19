@@ -38,6 +38,13 @@ useEffect(() => {
   setErrorMsg('')
   setSuccessMsg('')
 
+   // メールアドレスに@が含まれているかチェック
+  if (email && !email.includes('@')) {
+    setErrorMsg('メールアドレスに@がありません')
+    return
+  }
+
+
   try {
     const res = await fetch('http://localhost:8080/api/admin/me', {
       method: 'PUT',
