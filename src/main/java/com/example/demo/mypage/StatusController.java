@@ -33,17 +33,17 @@ public class StatusController {
         private String status;
     }
 
-    // フロントから送信されたデータの受け取り完了時刻を記録
+    // 更新結果と回答日時をフロントへ返すためのレスポンス
     public record StatusUpdateResponse(String status, LocalDateTime answeredTime) {}
 
 
-    //社員が安否状況を更新したことをマイページへ記憶する
+    //社員が安否状況を更新した日時と内容をDBへ保存する
     @PutMapping("/{userId}")   // クラスの@RequestMappingで既に/api/statusが付いているので、ここは{userId}だけでOK
     public ResponseEntity<StatusUpdateResponse> updateStatus(
             @PathVariable("userId") String userId,   // employee_idはVARCHARなのでStringで受ける
             @RequestBody StatusRequest request) {
-       // 回答日時を記録するため、現在日時を取得
-            LocalDateTime answeredTime = LocalDateTime.now();
+       // 回答日時として現在日時を取得（ナノ秒は切り捨て）
+            LocalDateTime answeredTime = LocalDateTime.now().withNano(0);
        
       jdbcTemplate.update(
         "UPDATE employees SET safety_status = ?, answered_time = ? " +
