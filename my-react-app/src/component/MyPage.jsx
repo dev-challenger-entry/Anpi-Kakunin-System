@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import './Mypage.css'
+import './MyPage.css'
 import Logout from './Logout'
 
 
