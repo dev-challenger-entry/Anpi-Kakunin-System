@@ -31,7 +31,39 @@ useEffect(() => {
       setEmail(data.email)
     })
 }, [])
-      
+   
+
+// 同じログイン中に2回以上変更する場合に備えて、前回のメッセージを消す
+  const handleSubmit = async () => {
+  setErrorMsg('')
+  setSuccessMsg('')
+
+  try {
+    const res = await fetch('http://localhost:8080/api/admin/me', {
+      method: 'PUT',
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        email
+      }),
+    })
+
+    const data = await res.json()
+
+    if (data.success) {
+      setSuccessMsg(data.message|| '更新に成功しました')
+    } else {
+      setErrorMsg(data.message || '更新に失敗しました')
+    }
+
+  } catch (err) {
+    console.error(err)
+    setErrorMsg('サーバーに接続できませんでした')
+  }
+}
+
 
   return (
 
@@ -77,11 +109,12 @@ useEffect(() => {
           メールアドレス
         </label>
 
-        <input
-          type="email"
-          className="admin-settings-input"
-          defaultValue="admin@example.com"
-        />
+         <input
+         type="email"
+         className="admin-settings-input"
+         value={email}
+         onChange={(e) => setEmail(e.target.value)}
+         />
 
         {/* 現在のパスワード */}
         <label className="admin-settings-label">
@@ -114,7 +147,7 @@ useEffect(() => {
         />
 
         {/* 変更ボタン */}
-        <button className="admin-settings-change-button">
+        <button className="admin-settings-change-button" onClick={handleSubmit}>
           変更する
         </button>
 
