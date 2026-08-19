@@ -19,6 +19,18 @@ const getLabel = (value) => {
   return STATUS_OPTIONS.find(option => option.value === value)?.label ?? value
 }
 
+// サーバーから受け取った日時を画面表示用に整形
+const formatDateTime = (dateTime) => {
+  const date = new Date(dateTime)
+
+  return `${date.getFullYear()}年` +
+         `${String(date.getMonth() + 1).padStart(2, '0')}月` +
+         `${String(date.getDate()).padStart(2, '0')}日` +
+         `${String(date.getHours()).padStart(2, '0')}時` +
+         `${String(date.getMinutes()).padStart(2, '0')}分` +
+         `${String(date.getSeconds()).padStart(2, '0')}秒`
+}
+
 
 function MyPage({ employeeId, onLogout }) {
 
@@ -133,6 +145,7 @@ function MyPage({ employeeId, onLogout }) {
       if (!response.ok) {
         throw new Error('更新に失敗しました')
       }
+
 
 // Javaから返されたJSONを1回だけ取得
 const result = await response.json()
@@ -281,11 +294,10 @@ setScreen('complete')
             {getLabel(employee.safetyStatus)}
           </p>
 
-
           {/* 最終送信日時 */}
           {lastSendTime && (
             <div className="admin-settings-send-time">
-              最終送信日時：{lastSendTime}
+              最終送信日時：{formatDateTime(lastSendTime)}
             </div>
           )}
 
@@ -308,3 +320,5 @@ setScreen('complete')
 
 
 export default MyPage
+
+
