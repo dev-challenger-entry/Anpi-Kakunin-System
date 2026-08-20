@@ -1,12 +1,12 @@
 package com.example.demo.admin;
 
+import com.example.demo.DTO.AdminInfoDto;
 import com.example.demo.mypage.Employee;
 import com.example.demo.mypage.EmployeeRepository;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.LinkedHashMap;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -23,7 +23,7 @@ public class AdminInfoController {
 
     // 管理者自身の情報を取得するAPI（管理者情報変更画面の初期表示用）
     @GetMapping("/me")
-    public ResponseEntity<?> getMe(HttpSession session) {
+    public ResponseEntity<AdminInfoDto> getMe(HttpSession session) {
         String employeeId = (String) session.getAttribute("employeeId");
 
         Optional<Employee> adminOpt = employeeRepository.findById(employeeId);
@@ -32,18 +32,19 @@ public class AdminInfoController {
         }
 
         Employee admin = adminOpt.get();
-        Map<String, Object> res = new LinkedHashMap<>();
-        res.put("employeeId", admin.getEmployeeId());
-        res.put("name", admin.getName());
-        res.put("email", admin.getEmail());
-        res.put("email2", admin.getEmail2());
+        AdminInfoDto dto = new AdminInfoDto(
+                admin.getEmployeeId(),
+                admin.getName(),
+                admin.getEmail(),
+                admin.getEmail2()
+        );
 
-        return ResponseEntity.ok(res);
+        return ResponseEntity.ok(dto);
     }
 
-      // 管理者自身の情報を更新するAPI
+    // 管理者自身の情報を更新するAPI
     @PutMapping("/me")
-        public ResponseEntity<Map<String, Object>> updateMe(
+    public ResponseEntity<Map<String, Object>> updateMe(
         // Reactから送られてくるリクエスト
         @RequestBody Map<String, String> request,
         HttpSession session) {
@@ -56,22 +57,22 @@ public class AdminInfoController {
         if (adminOpt.isEmpty()) {
             res.put("success", false);
             return ResponseEntity.status(404).body(res);
-           }
+        }
 
-         Employee admin = adminOpt.get();
+        Employee admin = adminOpt.get();
 
         // リクエストから新しいメールアドレスを取得
         String email = request.get("email");
 
-         // メールアドレスを更新
-         admin.setEmail(email);
+        // メールアドレスを更新
+        admin.setEmail(email);
 
         // DBに保存
-         employeeRepository.save(admin);
- 
-        // 更新成功
-         res.put("success", true);
+        employeeRepository.save(admin);
 
-         return ResponseEntity.ok(res);
-    } 
+        // 更新成功
+        res.put("success", true);
+
+        return ResponseEntity.ok(res);
+    }
 }
