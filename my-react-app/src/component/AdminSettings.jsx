@@ -244,6 +244,11 @@ function AdminSettings({ onBack, onLogout }) {
           onChange={(e) => setEmail(e.target.value)}
         />
 
+        <label className="admin-settings-manual">
+          ※パスワード変更のみの場合も、<br />
+          メールアドレスの入力が必要です。
+        </label>
+
         {/* 現在のパスワード */}
         <label className="admin-settings-label">
           現在のパスワード
@@ -405,4 +410,4 @@ function AdminSettings({ onBack, onLogout }) {
   )
 }
 
-  export default AdminSettings
+export default AdminSettings
