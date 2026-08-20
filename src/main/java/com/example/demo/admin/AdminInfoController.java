@@ -78,11 +78,26 @@ public class AdminInfoController {
             return ResponseEntity.status(401).body(res);
         }
 
-        // リクエストから新しいメールアドレスを取得
+        //パスワードが正しければ、メールアドレスを取得
         String email = request.get("email");
 
         // メールアドレスを更新
         admin.setEmail(email);
+
+        // ========================================
+        // 新しいパスワードが入力されている場合
+        // ========================================
+
+        String newPassword = request.get("newPassword");
+
+        if (newPassword != null && !newPassword.isBlank()) {
+
+            // 新しいパスワードをハッシュ化
+            String newPasswordHash = passwordEncoder.encode(newPassword);
+
+            // password_hashを更新
+            admin.setPasswordHash(newPasswordHash);
+        }
 
         // DBに保存
         employeeRepository.save(admin);

@@ -5,89 +5,151 @@ import { useState, useEffect } from 'react'
 
 function AdminSettings({ onBack, onLogout }) {
 
-  // 初期表示専用（変更不可）
+  // ================================
+  // 管理者情報
+  // ================================
+
+  // 管理者ID
+  // 今は初期表示のみで使用し、変更できないようにする
   const [employeeId, setEmployeeId] = useState('')
 
-  // 編集可能な項目
+  // 管理者名
+  // 画面上で変更可能
   const [name, setName] = useState('')
+
+  // メールアドレス
+  // 画面上で変更可能
   const [email, setEmail] = useState('')
+
+  // メールアドレス確認用
+  // 現在は入力欄のみ用意されている
   const [email2, setEmail2] = useState('')
+
+
+  // ================================
+  // パスワード変更用
+  // ================================
+
+  // 現在設定されているパスワード
+  // パスワード変更時に本人確認のため入力する
   const [currentPassword, setCurrentPassword] = useState('')
+
+  // 変更後に設定する新しいパスワード
   const [newPassword, setNewPassword] = useState('')
+
+  // 新しいパスワードの確認入力
+  // newPasswordと一致しているか確認するために使用する
   const [newPasswordConfirm, setNewPasswordConfirm] = useState('')
 
+
+  // ================================
+  // メッセージ表示用
+  // ================================
+
+  // エラーメッセージ
   const [errorMsg, setErrorMsg] = useState('')
+
+  // 更新成功時のメッセージ
   const [successMsg, setSuccessMsg] = useState('')
 
 
+  // ================================
+  // 送信日時表示用
+  // ================================
 
+  // 最後に変更処理を送信した時刻
   const [lastSendTime, setLastSendTime] = useState('')
-  const [lastSendStatus, setLastSendStatus] = useState('')
 
-// 初期表示：現在の管理者情報を取得
-useEffect(() => {
-  fetch('http://localhost:8080/api/admin/me', {
-    credentials: 'include'
-  })
-    .then(res => res.json())
-    .then(data => {
-      setEmployeeId(data.employeeId)
-      setName(data.name)
-      setEmail(data.email)
+  // ================================
+  // 初期表示処理
+  // ================================
+  // 初期表示：現在の管理者情報を取得
+  useEffect(() => {
+
+    // 管理者自身の情報を取得するAPIを呼び出す
+    fetch('http://localhost:8080/api/admin/me', {
+      credentials: 'include'
     })
-}, [])
-   
+      .then(res => res.json())
+      .then(data => {
+        setEmployeeId(data.employeeId)
+        setName(data.name)
+        setEmail(data.email)
+      })
+  }, [])
 
-// 同じログイン中に2回以上変更する場合に備えて、前回のメッセージを消す
+  // ================================
+  // 変更ボタンを押したときの処理
+  // ================================
+  // 管理者情報の変更処理
   const handleSubmit = async () => {
-  const sendTime = new Date().toLocaleTimeString('ja-JP', {
-  hour: '2-digit',
-  minute: '2-digit',
-  second: '2-digit'
-  })
-
-setLastSendTime(sendTime)
-
-  setErrorMsg('')
-  setSuccessMsg('')
-
-// メールアドレスに@がちょうど1個あるかチェック
-     if ((email.match(/@/g) || []).length !== 1) {
-       setErrorMsg('@を1つだけ入力してください')
-       return
-      }
-
-
-  try {
-    const res = await fetch('http://localhost:8080/api/admin/me', {
-      method: 'PUT',
-      credentials: 'include',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        email
-      }),
+    // 送信した現在時刻を取得する
+    const sendTime = new Date().toLocaleTimeString('ja-JP', {
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit'
     })
+    // 最終送信日時として画面に表示する
+    setLastSendTime(sendTime)
 
-    const data = await res.json()
+    // 前回表示されていたエラーメッセージを消す
+    setErrorMsg('')
 
-    if (data.success) {
-      setSuccessMsg(data.message|| '更新に成功しました')
-    } else {
-      setErrorMsg(data.message || '更新に失敗しました')
+    // 前回表示されていた成功メッセージを消す
+    setSuccessMsg('')
+
+    // ================================
+    // メールアドレスの入力チェック
+    // ================================
+    // メールアドレスに@がちょうど1個あるかチェック
+    if ((email.match(/@/g) || []).length !== 1) {
+      setErrorMsg('@を1つだけ入力してください')
+      return
     }
 
-  } catch (err) {
-    console.error(err)
-    setErrorMsg('サーバーに接続できませんでした')
+    // 新しいパスワードを入力した場合のみ、確認用と一致しているかチェック
+    if (newPassword && newPassword !== newPasswordConfirm) {
+      setErrorMsg('新しいパスワードと確認用パスワードが一致しません')
+      return
+    }
+
+    // ================================
+    // サーバーへの更新処理
+    // ================================
+    try {
+      const res = await fetch('http://localhost:8080/api/admin/me', {
+        method: 'PUT',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email,
+          currentPassword,
+          newPassword
+        }),
+      })
+
+      const data = await res.json()
+      // ================================
+      // 更新結果の処理
+      // ================================
+      if (data.success) {
+        setSuccessMsg(data.message || '更新に成功しました')
+      } else {
+        setErrorMsg(data.message || '更新に失敗しました')
+      }
+
+    } catch (err) {
+      console.error(err)
+      setErrorMsg('サーバーに接続できませんでした')
+    }
   }
-}
 
 
   return (
 
-     <div className="admin-settings-container">
+    <div className="admin-settings-container">
 
       {/* 管理者画面の見出し */}
       <div className="admin-settings-header">
@@ -108,7 +170,7 @@ setLastSendTime(sendTime)
         </label>
 
         <div className="admin-settings-input disabled">
-          Admin001　※変更不可
+          {employeeId}　※変更不可
         </div>
 
         {/* 管理者名 */}
@@ -129,12 +191,12 @@ setLastSendTime(sendTime)
           メールアドレス
         </label>
 
-         <input
-         type="email"
-         className="admin-settings-input"
-         value={email}
-         onChange={(e) => setEmail(e.target.value)}
-         />
+        <input
+          type="email"
+          className="admin-settings-input"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+        />
 
         {/* 現在のパスワード */}
         <label className="admin-settings-label">
@@ -144,6 +206,8 @@ setLastSendTime(sendTime)
         <input
           type="password"
           className="admin-settings-input"
+          value={currentPassword}
+          onChange={(e) => setCurrentPassword(e.target.value)}
         />
 
         {/* 新しいパスワード */}
@@ -151,9 +215,12 @@ setLastSendTime(sendTime)
           新しいパスワード
         </label>
 
+
         <input
           type="password"
           className="admin-settings-input"
+          value={newPassword}
+          onChange={(e) => setNewPassword(e.target.value)}
         />
 
         {/* 新しいパスワード確認 */}
@@ -164,27 +231,29 @@ setLastSendTime(sendTime)
         <input
           type="password"
           className="admin-settings-input"
+          value={newPasswordConfirm}
+          onChange={(e) => setNewPasswordConfirm(e.target.value)}
         />
 
         {/* エラーメッセージ */}
         {errorMsg && (
-           <div className="admin-settings-error">
-              {errorMsg}
-           </div>
+          <div className="admin-settings-error">
+            {errorMsg}
+          </div>
         )}
 
-         {/* 成功メッセージ */}
-         {successMsg && (
-            <div className="admin-settings-success">
-              {successMsg}
-           </div>
-         )}
+        {/* 成功メッセージ */}
+        {successMsg && (
+          <div className="admin-settings-success">
+            {successMsg}
+          </div>
+        )}
 
         {/* 最終送信日時 */}
         {lastSendTime && (
-           <div className="admin-settings-send-time">
+          <div className="admin-settings-send-time">
             最終送信日時：{lastSendTime}
-           </div>
+          </div>
         )}
 
         {/* 変更ボタン */}
@@ -201,12 +270,12 @@ setLastSendTime(sendTime)
         </button>
 
         {/* ログアウト */}
-           <button
-              type="button"
-              className="admin-settings-logout-button"
-              onClick={onLogout}>
-             ここからログアウトする
-           </button>
+        <button
+          type="button"
+          className="admin-settings-logout-button"
+          onClick={onLogout}>
+          ここからログアウトする
+        </button>
 
       </div>
 
