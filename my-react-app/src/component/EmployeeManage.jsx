@@ -21,6 +21,7 @@ function EmployeeManage({ onBack, onLogout }) {
 
     // 空欄のままEnterやフォーカス外れを防ぐ
     if (!searchId) {
+      setErrorMsg('ID入力欄が未記入です')
       return
     }
 
