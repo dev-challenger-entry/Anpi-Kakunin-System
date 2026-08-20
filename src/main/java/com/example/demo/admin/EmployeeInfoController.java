@@ -1,5 +1,6 @@
 package com.example.demo.admin;
 
+import com.example.demo.DTO.EmployeeInfoDto;
 import com.example.demo.mypage.Employee;
 import com.example.demo.mypage.EmployeeRepository;
 import org.springframework.http.ResponseEntity;
@@ -19,10 +20,17 @@ public class EmployeeInfoController {
 
     // 社員IDを1件だけ検索するAPI（URL: /api/admin/employees/{employeeId}）
     // IDを入力した瞬間に、他の入力欄をこのデータで埋めるために使う
+    // Employeeエンティティをそのまま返すとpasswordHash（BCryptのハッシュ値）まで
+    // レスポンスJSONに乗ってしまうため、EmployeeInfoDtoに詰め替えてから返す
     @GetMapping("/{employeeId}")
-    public ResponseEntity<Employee> getEmployeeById(
+    public ResponseEntity<EmployeeInfoDto> getEmployeeById(
             @PathVariable("employeeId") String employeeId) {
         return employeeRepository.findById(employeeId)
+                .map(employee -> new EmployeeInfoDto(
+                        employee.getEmployeeId(),
+                        employee.getName(),
+                        employee.getSectionName()
+                ))
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
