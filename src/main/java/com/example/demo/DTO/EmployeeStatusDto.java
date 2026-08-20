@@ -1,4 +1,4 @@
-package com.example.demo.admin;
+package com.example.demo.DTO;
 
 public class EmployeeStatusDto {
     private String employeeId;
