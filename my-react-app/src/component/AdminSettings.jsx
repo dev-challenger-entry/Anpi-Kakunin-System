@@ -52,6 +52,15 @@ function AdminSettings({ onBack, onLogout }) {
   // 更新成功時のメッセージ
   const [successMsg, setSuccessMsg] = useState('')
 
+  // ================================
+  // 変更確認ポップアップ用
+  // ================================
+
+  // 確認ポップアップを表示するか
+  const [showConfirm, setShowConfirm] = useState(false)
+
+  // 実際に変更する項目
+  const [changeItems, setChangeItems] = useState([])
 
   // ================================
   // 送信日時表示用
@@ -77,20 +86,11 @@ function AdminSettings({ onBack, onLogout }) {
         setEmail(data.email)
       })
   }, [])
-
   // ================================
   // 変更ボタンを押したときの処理
   // ================================
-  // 管理者情報の変更処理
-  const handleSubmit = async () => {
-    // 送信した現在時刻を取得する
-    const sendTime = new Date().toLocaleTimeString('ja-JP', {
-      hour: '2-digit',
-      minute: '2-digit',
-      second: '2-digit'
-    })
-    // 最終送信日時として画面に表示する
-    setLastSendTime(sendTime)
+  // 入力チェックをして、確認ポップアップを表示する
+  const handleSubmit = () => {
 
     // 前回表示されていたエラーメッセージを消す
     setErrorMsg('')
@@ -101,22 +101,68 @@ function AdminSettings({ onBack, onLogout }) {
     // ================================
     // メールアドレスの入力チェック
     // ================================
+
     // メールアドレスに@がちょうど1個あるかチェック
     if ((email.match(/@/g) || []).length !== 1) {
       setErrorMsg('@を1つだけ入力してください')
       return
     }
 
-    // 新しいパスワードを入力した場合のみ、確認用と一致しているかチェック
+    // ================================
+    // パスワードの入力チェック
+    // ================================
+
+    // 新しいパスワードを入力した場合のみ、
+    // 確認用パスワードと一致しているかチェック
     if (newPassword && newPassword !== newPasswordConfirm) {
       setErrorMsg('新しいパスワードと確認用パスワードが一致しません')
       return
     }
 
     // ================================
-    // サーバーへの更新処理
+    // 変更する項目を確認
     // ================================
+
+    const items = []
+
+    // メールアドレス
+    if (email) {
+      items.push('メールアドレス')
+    }
+
+    // パスワード
+    if (newPassword) {
+      items.push('パスワード')
+    }
+
+    // 変更項目を保存
+    setChangeItems(items)
+
+    // 確認ポップアップを表示
+    setShowConfirm(true)
+  }
+
+
+  // ================================
+  // 確認後の実際の更新処理
+  // ================================
+  const handleConfirmChange = async () => {
+
+    // ポップアップを閉じる
+    setShowConfirm(false)
+
+    // 送信した現在時刻を取得する
+    const sendTime = new Date().toLocaleTimeString('ja-JP', {
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit'
+    })
+
+    // 最終送信日時として画面に表示する
+    setLastSendTime(sendTime)
+
     try {
+
       const res = await fetch('http://localhost:8080/api/admin/me', {
         method: 'PUT',
         credentials: 'include',
@@ -131,9 +177,11 @@ function AdminSettings({ onBack, onLogout }) {
       })
 
       const data = await res.json()
+
       // ================================
       // 更新結果の処理
       // ================================
+
       if (data.success) {
         setSuccessMsg(data.message || '更新に成功しました')
       } else {
@@ -145,8 +193,6 @@ function AdminSettings({ onBack, onLogout }) {
       setErrorMsg('サーバーに接続できませんでした')
     }
   }
-
-
   return (
 
     <div className="admin-settings-container">
@@ -277,10 +323,86 @@ function AdminSettings({ onBack, onLogout }) {
           ここからログアウトする
         </button>
 
+        {/* ================================
+                変更確認ポップアップ
+        ================================ */}
+
+        {showConfirm && (
+          <div className="admin-settings-modal-overlay">
+
+            <div className="admin-settings-modal">
+
+              <h3 className="admin-settings-modal-title">
+                変更確認
+              </h3>
+
+              {changeItems.length === 1 && changeItems[0] === 'メールアドレス' ? (
+                <>
+                  <p className="admin-settings-modal-message">
+                    メールアドレスを変更しますか？
+                  </p>
+
+                  <div className="admin-settings-modal-email">
+                    変更後：<br />
+                    {email}
+                  </div>
+                </>
+              ) : (
+                <>
+                  <p className="admin-settings-modal-message">
+                    以下の情報を変更しますか？
+                  </p>
+
+                  <ul className="admin-settings-modal-list">
+                    {changeItems.includes('メールアドレス') && (
+                      <li>メールアドレス</li>
+                    )}
+
+                    {changeItems.includes('パスワード') && (
+                      <li>パスワード</li>
+                    )}
+                  </ul>
+
+                  {changeItems.includes('パスワード') && (
+                    <p className="admin-settings-modal-note">
+                      ※パスワードは入力した新しいパスワードに変更されます。
+                    </p>
+                  )}
+                </>
+              )}
+
+              <div className="admin-settings-modal-buttons">
+
+                {/* ポップアップを閉じる */}
+                <button
+                  type="button"
+                  className="admin-settings-modal-cancel"
+                  onClick={() => setShowConfirm(false)}
+                >
+                  キャンセル
+                </button>
+
+                {/* 実際に変更する */}
+                <button
+                  type="button"
+                  className="admin-settings-modal-confirm"
+                  onClick={handleConfirmChange}
+                >
+                  変更する
+                </button>
+
+              </div>
+
+            </div>
+
+          </div>
+        )}
+
+
       </div>
 
     </div>
   )
 }
 
-export default AdminSettings
+  export default AdminSettings
