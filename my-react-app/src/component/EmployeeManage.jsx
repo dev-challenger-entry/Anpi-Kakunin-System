@@ -1,6 +1,61 @@
 import './EmployeeManage.css'
+import { useState } from 'react'
 
 function EmployeeManage({ onBack, onLogout }) {
+
+
+  // 検索用（入力中のID）
+  const [searchId, setSearchId] = useState('')
+
+  // 検索結果として画面に表示する項目
+  const [employeeId, setEmployeeId] = useState('')
+  const [name, setName] = useState('')
+  const [sectionName, setSectionName] = useState('')
+
+  // エラーメッセージ
+  const [errorMsg, setErrorMsg] = useState('')
+
+  // 社員ID検索：入力されたIDでバックエンドに問い合わせる
+  const handleSearch = async () => {
+    setErrorMsg('')
+
+    // 空欄のままEnterやフォーカス外れを防ぐ
+    if (!searchId) {
+      return
+    }
+
+    try {
+      const res = await fetch(
+        `http://localhost:8080/api/admin/employees/${searchId}`,
+        { credentials: 'include' }
+      )
+
+      if (res.status === 404) {
+        setErrorMsg('存在しないアカウントIDです')
+        // 前回の検索結果が残らないようにクリア
+        setEmployeeId('')
+        setName('')
+        setSectionName('')
+        return
+      }
+
+      if (!res.ok) {
+        setErrorMsg('データの取得に失敗しました')
+        return
+      }
+
+      const data = await res.json()
+
+      setEmployeeId(data.employeeId)
+      setName(data.name)
+      setSectionName(data.sectionName)
+
+    } catch (err) {
+      console.error(err)
+      setErrorMsg('サーバーに接続できませんでした')
+    }
+  }
+
   return (
     <div className="employee-manage-container">
 
@@ -26,7 +81,17 @@ function EmployeeManage({ onBack, onLogout }) {
           type="text"
           className="employee-manage-input"
           placeholder="設定したいIDを入力"
+          value={searchId}
+          onChange={(e) => setSearchId(e.target.value)}
+          onBlur={handleSearch}
+          onKeyDown={(e) => { if (e.key === 'Enter') handleSearch() }}
         />
+
+        {errorMsg && (
+          <p className="employee-manage-error">
+            {errorMsg}
+          </p>
+        )}
 
         {/* 社員名 */}
         <label className="employee-manage-label">
@@ -36,7 +101,8 @@ function EmployeeManage({ onBack, onLogout }) {
         <input
           type="text"
           className="employee-manage-input"
-          defaultValue="社員子"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
         />
 
         {/* 部署名 */}
@@ -47,7 +113,8 @@ function EmployeeManage({ onBack, onLogout }) {
         <input
           type="text"
           className="employee-manage-input"
-          defaultValue="はなまる部署"
+          value={sectionName}
+          onChange={(e) => setSectionName(e.target.value)}
         />
 
         {/* 現在のパスワード */}
