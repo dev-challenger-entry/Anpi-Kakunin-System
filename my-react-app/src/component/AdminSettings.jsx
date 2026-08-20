@@ -1,5 +1,4 @@
 import './AdminSettings.css'
-import Logout from './Logout'
 
 import { useState, useEffect } from 'react'
 

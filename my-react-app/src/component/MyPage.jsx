@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react'
 import './MyPage.css'
-import Logout from './Logout'
 
 
 // 安否状況の選択肢一覧
