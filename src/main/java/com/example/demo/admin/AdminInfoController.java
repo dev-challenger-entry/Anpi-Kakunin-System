@@ -5,6 +5,7 @@ import com.example.demo.mypage.Employee;
 import com.example.demo.mypage.EmployeeRepository;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -16,9 +17,13 @@ import java.util.Optional;
 public class AdminInfoController {
 
     private final EmployeeRepository employeeRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public AdminInfoController(EmployeeRepository employeeRepository) {
+    public AdminInfoController(
+            EmployeeRepository employeeRepository,
+            PasswordEncoder passwordEncoder) {
         this.employeeRepository = employeeRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     // 管理者自身の情報を取得するAPI（管理者情報変更画面の初期表示用）
@@ -36,8 +41,7 @@ public class AdminInfoController {
                 admin.getEmployeeId(),
                 admin.getName(),
                 admin.getEmail(),
-                admin.getEmail2()
-        );
+                admin.getEmail2());
 
         return ResponseEntity.ok(dto);
     }
@@ -45,9 +49,9 @@ public class AdminInfoController {
     // 管理者自身の情報を更新するAPI
     @PutMapping("/me")
     public ResponseEntity<Map<String, Object>> updateMe(
-        // Reactから送られてくるリクエスト
-        @RequestBody Map<String, String> request,
-        HttpSession session) {
+            // Reactから送られてくるリクエスト
+            @RequestBody Map<String, String> request,
+            HttpSession session) {
 
         String employeeId = (String) session.getAttribute("employeeId");
         Map<String, Object> res = new HashMap<>();
@@ -60,6 +64,19 @@ public class AdminInfoController {
         }
 
         Employee admin = adminOpt.get();
+
+        // Reactから現在のパスワードを取得
+        String currentPassword = request.get("currentPassword");
+
+        // 現在のパスワードを照合
+        if (!passwordEncoder.matches(
+                currentPassword,
+                admin.getPasswordHash())) {
+
+            res.put("success", false);
+            res.put("message", "現在のパスワードが正しくありません");
+            return ResponseEntity.status(401).body(res);
+        }
 
         // リクエストから新しいメールアドレスを取得
         String email = request.get("email");
