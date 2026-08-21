@@ -3,7 +3,6 @@ import { useState } from 'react'
 
 function EmployeeManage({ onBack, onLogout }) {
 
-
   // 検索用（入力中のID）
   const [searchId, setSearchId] = useState('')
 
@@ -12,12 +11,20 @@ function EmployeeManage({ onBack, onLogout }) {
   const [name, setName] = useState('')
   const [sectionName, setSectionName] = useState('')
 
+  // パスワード
+  const [currentPassword, setCurrentPassword] = useState('')
+  const [newPassword, setNewPassword] = useState('')
+
+  // 検索結果が見つかったか
+  const [employeeFound, setEmployeeFound] = useState(false)
+
   // エラーメッセージ
   const [errorMsg, setErrorMsg] = useState('')
 
   // 社員ID検索：入力されたIDでバックエンドに問い合わせる
   const handleSearch = async () => {
     setErrorMsg('')
+    setEmployeeFound(false)
 
     // 空欄のままEnterやフォーカス外れを防ぐ
     if (!searchId) {
@@ -33,10 +40,14 @@ function EmployeeManage({ onBack, onLogout }) {
 
       if (res.status === 404) {
         setErrorMsg('存在しないアカウントIDです')
+
         // 前回の検索結果が残らないようにクリア
         setEmployeeId('')
         setName('')
         setSectionName('')
+        setCurrentPassword('')
+        setNewPassword('')
+
         return
       }
 
@@ -50,6 +61,9 @@ function EmployeeManage({ onBack, onLogout }) {
       setEmployeeId(data.employeeId)
       setName(data.name)
       setSectionName(data.sectionName)
+
+      // 社員情報が見つかったので入力欄を表示
+      setEmployeeFound(true)
 
     } catch (err) {
       console.error(err)
@@ -73,7 +87,7 @@ function EmployeeManage({ onBack, onLogout }) {
       {/* 社員情報 */}
       <div className="employee-manage-form">
 
-        {/* 社員ID */}
+        {/* 社員ID検索欄 */}
         <label className="employee-manage-label">
           社員ID
         </label>
@@ -85,7 +99,9 @@ function EmployeeManage({ onBack, onLogout }) {
           value={searchId}
           onChange={(e) => setSearchId(e.target.value)}
           onBlur={handleSearch}
-          onKeyDown={(e) => { if (e.key === 'Enter') handleSearch() }}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter') handleSearch()
+          }}
         />
 
         {errorMsg && (
@@ -94,83 +110,92 @@ function EmployeeManage({ onBack, onLogout }) {
           </p>
         )}
 
-        {/* 社員名 */}
-        <label className="employee-manage-label">
-          社員名
-        </label>
+        {/* 検索結果が見つかった場合のみ表示 */}
+        {employeeFound && (
+          <>
+            {/* 社員名 */}
+            <label className="employee-manage-label">
+              社員名
+            </label>
 
-        <input
-          type="text"
-          className="employee-manage-input"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-        />
+            <input
+              type="text"
+              className="employee-manage-input"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+            />
 
-        {/* 部署名 */}
-        <label className="employee-manage-label">
-          部署名
-        </label>
+            {/* 部署名 */}
+            <label className="employee-manage-label">
+              部署名
+            </label>
 
-        <input
-          type="text"
-          className="employee-manage-input"
-          value={sectionName}
-          onChange={(e) => setSectionName(e.target.value)}
-        />
+            <input
+              type="text"
+              className="employee-manage-input"
+              value={sectionName}
+              onChange={(e) => setSectionName(e.target.value)}
+            />
 
-        {/* 現在のパスワード */}
-        <label className="employee-manage-label">
-          現在のパスワード
-        </label>
+            {/* 現在のパスワード */}
+            <label className="employee-manage-label">
+              現在のパスワード
+            </label>
 
-        <input
-          type="password"
-          className="employee-manage-input"
-        />
+            <input
+              type="password"
+              className="employee-manage-input"
+              value={currentPassword}
+              onChange={(e) => setCurrentPassword(e.target.value)}
+            />
 
-        {/* 新しいパスワード */}
-        <label className="employee-manage-label">
-          新しいパスワード
-        </label>
+            {/* 新しいパスワード */}
+            <label className="employee-manage-label">
+              新しいパスワード
+            </label>
 
-        <input
-          type="password"
-          className="employee-manage-input"
-        />
+            <input
+              type="password"
+              className="employee-manage-input"
+              value={newPassword}
+              onChange={(e) => setNewPassword(e.target.value)}
+            />
 
-        {/* 変更する */}
-        <button
-          type="button"
-          className="employee-manage-change-button"
-        >
-          変更する
-        </button>
+            {/* 変更する */}
+            <button
+              type="button"
+              className="employee-manage-change-button"
+            >
+              変更する
+            </button>
 
-        {/* 削除する */}
-        <button
-          type="button"
-          className="employee-manage-delete-button"
-        >
-          削除する
-        </button>
+            {/* 削除する */}
+            <button
+              type="button"
+              className="employee-manage-delete-button"
+            >
+              削除する
+            </button>
 
-        {/* キャンセル */}
-        <button
-          type="button"
-          className="employee-manage-cancel-button"
-          onClick={onBack}
-        >
-          キャンセル
-        </button>
+            {/* キャンセル */}
+            <button
+              type="button"
+              className="employee-manage-cancel-button"
+              onClick={onBack}
+            >
+              キャンセル
+            </button>
 
-        {/* ログアウト */}
-        <button
-          type="button"
-          className="employee-manage-logout-button"
-          onClick={onLogout}
-        >
-          ここからログアウトする
-        </button>
+            {/* ログアウト */}
+            <button
+              type="button"
+              className="employee-manage-logout-button"
+              onClick={onLogout}
+            >
+              ここからログアウトする
+            </button>
+          </>
+        )}
 
       </div>
 
