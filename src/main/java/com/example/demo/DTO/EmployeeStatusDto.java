@@ -22,7 +22,7 @@ public class EmployeeStatusDto {
 
     public String getEmployeeId() { return employeeId; }
     public String getName() { return name; }
-    public String getsection_name() { return sectionName; }
+    public String getSectionName() { return sectionName; } // ← getsection_name() から修正
     public String getSafetyStatus() { return safetyStatus; }
     public String getRole() { return role; }
     public LocalDateTime getAnsweredTime() { return answeredTime; }
