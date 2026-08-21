@@ -12,108 +12,136 @@ const STATUS_META = [
 
 // 社員情報登録・変更画面、管理者情報変更画面への遷移用に、
 // 親コンポーネント（App.jsx）から遷移関数を props として受け取る
-function AdminStatusSummary({ onNavigateToEmployeeManage, onNavigateToAdminSettings, onLogout }) {
+function AdminStatusSummary({
+  onNavigateToEmployeeManage,
+  onNavigateToAdminSettings,
+  onLogout
+}) {
 
-  // ステータスごとの集計人数（例：{ "無事です": 2, "未回答": 1, ... }）を保持する
-  // 初期値は空のオブジェクト（＝まだ何も取得できていない状態）
+  // ステータスごとの集計人数を保持する
   const [summary, setSummary] = useState({})
 
-  // ステータスごとに、該当する社員名の一覧をまとめて保持する
-  // 例：{ "無事です": ["山田 太郎", "佐藤 美咲"], "未回答": ["鈴木 一郎"] }
+  // ステータスごとの社員一覧を保持する
   const [employeesByStatus, setEmployeesByStatus] = useState({})
 
-  // データ取得（集計API・社員一覧API）が失敗した場合に、
-  // 画面へ表示するエラーメッセージを保持する
-  // 初期値は空文字（＝エラーなし）
+  // エラーメッセージを保持する
   const [errorMsg, setErrorMsg] = useState('')
 
-  // 画面が表示された直後（初回レンダリング時）に1回だけ実行される処理
-  // 第2引数が空配列[]なので、依存する値の変化では再実行されない
+  // 画面表示時にAPIからデータを取得
   useEffect(() => {
-    // 集計API と 社員一覧API を「同時に」呼び出す
-    // Promise.allを使うことで、2つのfetchが両方終わるまで待ってから次の処理に進める
     Promise.all([
-      fetch('http://localhost:8080/api/admin/status-summary', { credentials: 'include' }),
-      fetch('http://localhost:8080/api/admin/employees', { credentials: 'include' }),
+      fetch('http://localhost:8080/api/admin/status-summary', {
+        credentials: 'include'
+      }),
+      fetch('http://localhost:8080/api/admin/employees', {
+        credentials: 'include'
+      }),
     ])
       .then(async ([summaryRes, employeesRes]) => {
-        // まず両方のレスポンス（json化前）の時点で401（未ログイン）をチェックする
-        // json()に変換する前にチェックしないと、401のレスポンスをjson()しようとしてエラーになることがあるため
+
+        // 401（未ログイン）をチェック
         if (summaryRes.status === 401 || employeesRes.status === 401) {
-          alert('ログインしていません。ログイン画面に戻ります。');
-          // App.jsxのstate（loggedInEmployeeIdなど）はリロードで消える仕様のため、
-          // リロードすることで結果的にログイン画面に戻せる
-          window.location.reload();
-          return null; // ここで処理を打ち切る（このあとのthenにnullが渡る）
+          alert('ログインしていません。ログイン画面に戻ります。')
+          window.location.reload()
+          return null
         }
 
-        // 401じゃなければ、ここで初めてレスポンスの中身をJSON（JS上で扱えるデータ）に変換する
-        const summaryData = await summaryRes.json();
-        const employeesData = await employeesRes.json();
-        // 2つのデータをまとめて次のthenに渡す
-        return [summaryData, employeesData];
+        // JSONに変換
+        const summaryData = await summaryRes.json()
+        const employeesData = await employeesRes.json()
+
+        return [summaryData, employeesData]
       })
       .then((result) => {
-        // 直前のthenでnullが返ってきた場合（＝401で既に処理済み）は、ここで終了する
-        if (!result) return;
 
-        // 配列を分割代入で、それぞれの変数に入れ直す
-        const [summaryData, employeesData] = result;
-        // 集計人数をstateに保存 → 画面が再描画される
+        // 401で処理済みの場合
+        if (!result) return
+
+        const [summaryData, employeesData] = result
+
+        // 集計結果を保存
         setSummary(summaryData)
 
-        // ステータスごとに社員名を仕分けするための、空のオブジェクトを用意
+        // ステータスごとに社員を分類
         const grouped = {}
-        
+
         STATUS_META.forEach(({ value }) => {
           grouped[value] = (summaryData[value]?.employees || [])
-            .map(employee => employee.name)
+            .map(employee => ({
+              name: employee.name,
+              answeredTime: employee.answeredTime
+            }))
         })
-        // 仕分けが終わったオブジェクトをstateに保存 → 画面が再描画される
+
+        // 分類した社員一覧を保存
         setEmployeesByStatus(grouped)
       })
       .catch(err => {
-        // fetch自体が失敗した場合（サーバーに繋がらない等）の処理
         console.error(err)
         setErrorMsg('データの取得に失敗しました')
       })
   }, [])
 
-  // ここから実際に画面に表示される内容（JSX）
+  // 回答日時を「YYYY/MM/DD HH:mm」の形式で表示する
+  const formatAnsweredTime = (answeredTime) => {
+    if (!answeredTime) return '未回答'
+
+    const date = new Date(answeredTime)
+
+    return `${date.getFullYear()}/${String(date.getMonth() + 1).padStart(2, '0')}/${String(date.getDate()).padStart(2, '0')} ${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`
+  }
+
+  // 画面表示
   return (
     <div className="admin-card">
+
       {/* 見出し */}
       <h2 className="admin-title">集計結果</h2>
 
-      {/* errorMsgに何か文字列が入っているときだけ、エラーメッセージを表示する */}
+      {/* エラーメッセージ */}
       {errorMsg && <p className="admin-error">{errorMsg}</p>}
 
       <div className="admin-table">
-        {/* テーブルのヘッダー行（見出し行） */}
+
+        {/* テーブルのヘッダー行 */}
         <div className="admin-table-header">
           <div className="admin-col-status">回答状況</div>
           <div className="admin-col-people">回答者</div>
         </div>
 
-        {/* STATUS_META配列の要素数だけ、行を繰り返し生成する（map） */}
+        {/* ステータスごとの行 */}
         {STATUS_META.map(({ value, label, className }) => (
-          // key属性はReactがリストの各要素を区別するために必須
           <div className="admin-table-row" key={value}>
-            {/* ステータス名のセル。classNameでステータスごとの色分けをしている */}
-            <div className={`admin-status-cell ${className}`}>{label}</div>
+
+            {/* ステータス名 */}
+            <div className={`admin-status-cell ${className}`}>
+              {label}
+            </div>
+
+            {/* 回答者 */}
             <div className="admin-people-cell">
-              {/* summary[value]が存在しない（undefined）場合は、??演算子で0を表示する */}
+
               回答者{summary[value]?.count ?? 0}名
-              {/* そのステータスに該当する社員が1人以上いる場合だけ、名前一覧を表示する */}
+
+              {/* 社員が1人以上いる場合だけ表示 */}
               {(employeesByStatus[value] || []).length > 0 && (
                 <div className="admin-people-list">
-                  {/* 配列を「、」区切りの1つの文字列に変換して表示する */}
-                  {employeesByStatus[value].join('、')}
+
+                  {employeesByStatus[value].map((employee, index) => (
+                    <div key={index}>
+                      {employee.name}
+                      <br />
+                      （回答日時：{formatAnsweredTime(employee.answeredTime)}）
+                    </div>
+                  ))}
+
                 </div>
               )}
+
             </div>
           </div>
         ))}
+
       </div>
 
       {/* 画面遷移用のボタン群 */}
@@ -122,7 +150,7 @@ function AdminStatusSummary({ onNavigateToEmployeeManage, onNavigateToAdminSetti
         {/* 社員情報登録・変更画面へ遷移 */}
         <button
           type="button"
-          className="navigation-button employee-manage-button  mt-large"
+          className="navigation-button employee-manage-button mt-large"
           onClick={onNavigateToEmployeeManage}
         >
           社員情報の登録・変更はこちらへ
@@ -131,7 +159,7 @@ function AdminStatusSummary({ onNavigateToEmployeeManage, onNavigateToAdminSetti
         {/* 管理者情報変更画面へ遷移 */}
         <button
           type="button"
-          className="navigation-button admin-settings-button  mt-large"
+          className="navigation-button admin-settings-button mt-large"
           onClick={onNavigateToAdminSettings}
         >
           管理者情報変更はこちらへ
@@ -147,8 +175,9 @@ function AdminStatusSummary({ onNavigateToEmployeeManage, onNavigateToAdminSetti
         </button>
 
       </div>
+
     </div>
   )
 }
 
-export default AdminStatusSummary;
+export default AdminStatusSummary
