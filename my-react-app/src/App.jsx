@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
 // 各画面のコンポーネントを読み込む
 import Login from './component/Login'
@@ -27,6 +27,11 @@ function App() {
   // 管理者画面内でどの画面を表示するかを管理する
   // 'summary'（集計結果） | 'employeeManage'（社員情報登録・変更） | 'adminSettings'（管理者情報変更）
   const [adminView, setAdminView] = useState('summary')
+
+  // 管理者画面を切り替えたとき、スクロール位置を先頭に戻す
+  useEffect(() => {
+    window.scrollTo(0, 0)
+  }, [adminView])
 
   // ログアウト完了メッセージを保持する
   const [logoutMessage, setLogoutMessage] = useState('')
