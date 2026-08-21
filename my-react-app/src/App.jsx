@@ -53,7 +53,7 @@ function App() {
     setRole(null)
     setCaptchaVerified(false)
     setAdminView('summary')
-    setLogoutMessage('ログアウトしました')
+    setLogoutMessage('ログアウトしました。ブラウザを再読み込みしてください。')
   }
 
   // ログイン後に認証状態を保持
@@ -111,29 +111,37 @@ function App() {
     }
   }
 
-  return (
-    <>
-      <div className="system-header">
-        <h1 className="system-title">
-          安否確認システム
-        </h1>
-
-        <div className="company-name">
-          サンプル企業
-        </div>
-      </div>
-
-      {/* 現在の状態に応じて「どのコンポーネントを表示するか」を決定し、その結果を画面に描画する */}
-      {renderMainContent()}
-
-      {/* ログアウト完了メッセージ */}
-      {logoutMessage && (
-        <p style={{ color: 'red', fontSize: '12px' }}>
+  // ログアウト画面を描画する
+  const renderAppContent = () => {
+    // ログアウト直後
+    if (logoutMessage) {
+      return (
+        <p className="logout-message">
           {logoutMessage}
         </p>
-      )}
-    </>
-  )
+      )
+    }
+
+    return (
+      <>
+        <div className="system-header">
+          <h1 className="system-title">
+            安否確認システム
+          </h1>
+
+          <div className="company-name">
+            サンプル企業
+          </div>
+        </div>
+
+        {/* 現在の状態に応じて「どのコンポーネントを表示するか」を決定し、その結果を画面に描画する */}
+        {renderMainContent()}
+
+      </>
+    )
+  }
+  // アプリ全体を表示する
+  return renderAppContent()
 }
 
 export default App
