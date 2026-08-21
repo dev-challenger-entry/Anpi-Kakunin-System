@@ -12,11 +12,15 @@ CREATE TABLE IF NOT EXISTS employees (
     email2 VARCHAR(255)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-DELETE FROM employees;
+-- 【重要】以前はここで DELETE FROM employees; を実行していたが、
+-- これが原因で起動のたびに全データが初期状態へリセットされていた。
+-- そのため削除した。
+-- 代わりに、以下のINSERTは「INSERT IGNORE」にすることで、
+-- 既にそのemployee_idが存在する場合は何もしない（＝重複エラーで起動失敗しない）ようにしている。
+-- これにより、初回起動時のみサンプルデータが投入され、ブラウザを再読み込み2回目以降は既存データがそのまま保持される。
 
-
--- サンプル社員データの登録
-INSERT INTO employees (
+-- サンプル社員データの登録（初回起動時のみ）
+INSERT IGNORE INTO employees (
     employee_id,
     name,
     section_name,
@@ -39,7 +43,7 @@ VALUES (
     NULL
 );
 
-INSERT INTO employees (
+INSERT IGNORE INTO employees (
     employee_id,
     name,
     section_name,
@@ -62,7 +66,7 @@ VALUES (
     NULL
 );
 
-INSERT INTO employees (
+INSERT IGNORE INTO employees (
     employee_id,
     name,
     section_name,
@@ -86,8 +90,8 @@ VALUES (
 );
 
 
--- 管理者専用データ
-INSERT INTO employees (
+-- 管理者専用データ（初回起動時のみ）
+INSERT IGNORE INTO employees (
     employee_id,
     name,
     section_name,
