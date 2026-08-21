@@ -1,6 +1,6 @@
 package com.example.demo.admin;
 
-import com.example.demo.mypage.Employee;
+import com.example.demo.Entity.Employee;
 import com.example.demo.mypage.EmployeeRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

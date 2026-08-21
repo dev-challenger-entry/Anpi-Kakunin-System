@@ -1,7 +1,7 @@
 package com.example.demo.admin;
 
 import com.example.demo.DTO.AdminInfoDto;
-import com.example.demo.mypage.Employee;
+import com.example.demo.Entity.Employee;
 import com.example.demo.mypage.EmployeeRepository;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.http.ResponseEntity;

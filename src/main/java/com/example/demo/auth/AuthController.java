@@ -1,8 +1,8 @@
 package com.example.demo.auth;
 
-import com.example.demo.mypage.Employee;
 import com.example.demo.mypage.EmployeeRepository;
 import com.example.demo.DTO.LoginRequest;
+import com.example.demo.Entity.Employee;
 
 import jakarta.servlet.http.HttpSession;
 
