@@ -64,17 +64,11 @@ function AdminStatusSummary({ onNavigateToEmployeeManage, onNavigateToAdminSetti
 
         // ステータスごとに社員名を仕分けするための、空のオブジェクトを用意
         const grouped = {}
-        employeesData
-          // 管理者(ADMIN)は安否確認の対象外なので、一覧から除外する
-          .filter(emp => emp.role !== 'ADMIN')
-          .forEach(emp => {
-            // その社員の安否状況を取り出す。値がない（null/undefined）場合は'未回答'扱いにする
-            const status = emp.safetyStatus || '未回答'
-            // groupedの中にそのステータスのキーがまだなければ、空配列を用意する
-            if (!grouped[status]) grouped[status] = []
-            // そのステータスの配列に、社員名を追加する
-            grouped[status].push(emp.name)
-          })
+        
+        STATUS_META.forEach(({ value }) => {
+          grouped[value] = (summaryData[value]?.employees || [])
+            .map(employee => employee.name)
+        })
         // 仕分けが終わったオブジェクトをstateに保存 → 画面が再描画される
         setEmployeesByStatus(grouped)
       })
@@ -109,7 +103,7 @@ function AdminStatusSummary({ onNavigateToEmployeeManage, onNavigateToAdminSetti
             <div className={`admin-status-cell ${className}`}>{label}</div>
             <div className="admin-people-cell">
               {/* summary[value]が存在しない（undefined）場合は、??演算子で0を表示する */}
-              回答者{summary[value] ?? 0}名
+              回答者{summary[value]?.count ?? 0}名
               {/* そのステータスに該当する社員が1人以上いる場合だけ、名前一覧を表示する */}
               {(employeesByStatus[value] || []).length > 0 && (
                 <div className="admin-people-list">
@@ -143,14 +137,14 @@ function AdminStatusSummary({ onNavigateToEmployeeManage, onNavigateToAdminSetti
           管理者情報変更はこちらへ
         </button>
 
-          {/* ログアウト */}
-          <button
-            type="button"
-            className="admin-logout-button"
-            onClick={onLogout}
-       >
+        {/* ログアウト */}
+        <button
+          type="button"
+          className="admin-logout-button"
+          onClick={onLogout}
+        >
           ここからログアウトする
-         </button>
+        </button>
 
       </div>
     </div>
