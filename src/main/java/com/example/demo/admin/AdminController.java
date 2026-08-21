@@ -1,13 +1,16 @@
 package com.example.demo.admin;
 
-import com.example.demo.Entity.Employee;
+import com.example.demo.DTO.EmployeeInfoDto;
+import com.example.demo.DTO.EmployeeStatusDto;
 import com.example.demo.mypage.EmployeeRepository;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/admin")
@@ -19,32 +22,50 @@ public class AdminController {
         this.employeeRepository = employeeRepository;
     }
 
-    // 1. 社員一覧を取得するAPI（URL: /api/admin/employees）
+    // 1. 社員一覧を取得するAPI
+    // URL: /api/admin/employees
     @GetMapping("/employees")
-    public ResponseEntity<List<Employee>> getAllEmployees() {
-        List<Employee> list = employeeRepository.findAll();
+    public ResponseEntity<List<EmployeeInfoDto>> getAllEmployees() {
+
+        List<EmployeeInfoDto> list = employeeRepository.findAll()
+                .stream()
+                .map(employee -> new EmployeeInfoDto(
+                        employee.getEmployeeId(),
+                        employee.getName(),
+                        employee.getSectionName()
+                ))
+                .collect(Collectors.toList());
+
         return ResponseEntity.ok(list);
     }
 
-    // 2. ステータスごとの集計を取得するAPI（URL: /api/admin/status-summary）
+    // 2. ステータスごとの集計を取得するAPI
+    // URL: /api/admin/status-summary
     @GetMapping("/status-summary")
     public ResponseEntity<Map<String, Long>> getStatusSummary() {
-        // フロントのSTATUS_OPTIONSと完全一致させる
-        String[] allStatuses = { "未回答", "無事です", "避難しました", "出勤困難" };
-        Map<String, Long> summary = new LinkedHashMap<>();
-        for (String s : allStatuses) {
-            summary.put(s, 0L); // 0人のステータスも表示されるように初期化
-        }
-        for (Employee e : employeeRepository.findAll()) {
-            // ただし、管理者アカウントは安否確認の対象外なので集計から除外する
-            if ("ADMIN".equals(e.getRole())) {
-            continue;
-          }
 
-            String status = (e.getSafetyStatus() == null) ? "未回答" : e.getSafetyStatus();
-            Long current = summary.getOrDefault(status, 0L);
-            summary.put(status, current + 1L);
-        }
+        // 社員全員をEmployeeStatusDtoに変換
+        List<EmployeeStatusDto> employees = employeeRepository.findAll()
+                .stream()
+                .map(employee -> new EmployeeStatusDto(
+                        employee.getEmployeeId(),
+                        employee.getName(),
+                        employee.getSectionName(),
+                        employee.getSafetyStatus(),
+                        employee.getRole(),
+                        employee.getAnsweredTime()
+                ))
+                .collect(Collectors.toList());
+
+        // safetyStatusごとに人数を集計
+        // メソッド参照をラムダ式に変更してNull Type Safety警告を回避
+        Map<String, Long> summary = employees.stream()
+                .collect(Collectors.groupingBy(
+                        dto -> dto.getSafetyStatus(),
+                        LinkedHashMap::new,
+                        Collectors.counting()
+                ));
+
         return ResponseEntity.ok(summary);
     }
 }
