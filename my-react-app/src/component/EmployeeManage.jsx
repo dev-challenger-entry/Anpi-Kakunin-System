@@ -176,30 +176,30 @@ function EmployeeManage({ onBack, onLogout }) {
             >
               削除する
             </button>
-
-            {/* キャンセル */}
-            <button
-              type="button"
-              className="employee-manage-cancel-button"
-              onClick={onBack}
-            >
-              キャンセル
-            </button>
-
-            {/* ログアウト */}
-            <button
-              type="button"
-              className="employee-manage-logout-button"
-              onClick={onLogout}
-            >
-              ここからログアウトする
-            </button>
           </>
         )}
 
-      </div>
+        {/* キャンセル */}
+        <button
+          type="button"
+          className="employee-manage-cancel-button"
+          onClick={onBack}
+        >
+          キャンセル
+        </button>
+
+        {/* ログアウト */}
+        <button
+          type="button"
+          className="employee-manage-logout-button"
+          onClick={onLogout}
+        >
+          ここからログアウトする
+        </button>
 
     </div>
+
+    </div >
   )
 }
 
