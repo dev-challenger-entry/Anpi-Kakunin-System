@@ -1,6 +1,7 @@
 package com.example.demo.admin;
 
 import com.example.demo.DTO.EmployeeInfoDto;
+import com.example.demo.DTO.EmployeeRegisterRequestDto;
 import com.example.demo.DTO.EmployeeUpdateRequestDto;
 import com.example.demo.DTO.EmployeeUpdateResultDto;
 import com.example.demo.Entity.Employee;
@@ -13,7 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
-// 社員情報の検索・更新に関するビジネスロジックをここに集約する
+// 社員情報の検索・登録・更新・削除に関するビジネスロジックをここに集約する
 // Entity（Employee）を扱ってよいのはこの層まで。Controllerには渡さない。
 @Service
 public class EmployeeInfoService {
@@ -37,6 +38,31 @@ public class EmployeeInfoService {
                         employee.getName(),
                         employee.getSectionName()
                 ));
+    }
+
+    // ========================================
+    // 新規登録
+    // ========================================
+    // この画面（EmployeeManage.jsx）経由の登録は、常に一般社員（USER）として登録する
+    // 管理者アカウントの新規作成はこの画面の対象外
+    public EmployeeUpdateResultDto registerEmployee(EmployeeRegisterRequestDto request) {
+
+        // 二重登録防止
+        if (employeeRepository.existsById(request.getEmployeeId())) {
+            return EmployeeUpdateResultDto.failure("そのIDは既に使用されています", 409);
+        }
+
+        Employee employee = new Employee();
+        employee.setEmployeeId(request.getEmployeeId());
+        employee.setName(request.getName());
+        employee.setSectionName(request.getSectionName());
+        employee.setSafetyStatus("未回答");
+        employee.setPasswordHash(passwordEncoder.encode(request.getNewPassword()));
+        employee.setRole("USER");
+
+        employeeRepository.save(employee);
+
+        return EmployeeUpdateResultDto.success("登録に成功しました");
     }
 
     // 社員情報を更新する
@@ -117,5 +143,19 @@ public class EmployeeInfoService {
         employeeRepository.save(employee);
 
         return EmployeeUpdateResultDto.success("社員情報を更新しました");
+    }
+
+    // ========================================
+    // 削除
+    // ========================================
+    public EmployeeUpdateResultDto deleteEmployee(String employeeId) {
+
+        if (!employeeRepository.existsById(employeeId)) {
+            return EmployeeUpdateResultDto.failure("指定されたIDの社員が見つかりません", 404);
+        }
+
+        employeeRepository.deleteById(employeeId);
+
+        return EmployeeUpdateResultDto.success("削除しました");
     }
 }
