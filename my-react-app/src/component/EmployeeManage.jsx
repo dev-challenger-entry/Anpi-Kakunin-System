@@ -48,6 +48,7 @@ function EmployeeManage({ onBack, onLogout }) {
         setSectionName('')
         setCurrentPassword('')
         setNewPassword('')
+        setConfirmPassword('')
 
         return
       }
@@ -70,6 +71,23 @@ function EmployeeManage({ onBack, onLogout }) {
       console.error(err)
       setErrorMsg('サーバーに接続できませんでした')
     }
+  }
+
+  // パスワード変更
+  const handlePasswordChange = () => {
+    setErrorMsg('')
+
+    // 新しいパスワードと確認用パスワードが一致しているか確認
+    if (newPassword !== confirmPassword) {
+      setErrorMsg('新しいパスワードと確認用パスワードが一致していません')
+      return
+    }
+
+    // ここまで来たらパスワードが一致している
+    console.log('パスワードが一致しています')
+
+    // TODO:
+    // ここにバックエンドへパスワード変更リクエストを送る処理を追加する
   }
 
   return (
@@ -173,11 +191,12 @@ function EmployeeManage({ onBack, onLogout }) {
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
             />
-            
+
             {/* 変更する */}
             <button
               type="button"
               className="employee-manage-change-button"
+              onClick={handlePasswordChange}
             >
               変更する
             </button>
@@ -212,7 +231,7 @@ function EmployeeManage({ onBack, onLogout }) {
 
       </div>
 
-    </div >
+    </div>
   )
 }
 
