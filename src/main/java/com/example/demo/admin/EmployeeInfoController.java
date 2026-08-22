@@ -1,6 +1,7 @@
 package com.example.demo.admin;
 
 import com.example.demo.DTO.EmployeeInfoDto;
+import com.example.demo.DTO.EmployeeRegisterRequestDto;
 import com.example.demo.DTO.EmployeeUpdateRequestDto;
 import com.example.demo.DTO.EmployeeUpdateResultDto;
 
@@ -37,6 +38,16 @@ public class EmployeeInfoController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
+    // 社員を新規登録するAPI（URL: /api/admin/employees）
+    @PostMapping
+    public ResponseEntity<Map<String, Object>> registerEmployee(
+            @RequestBody EmployeeRegisterRequestDto request) {
+
+        EmployeeUpdateResultDto result = employeeInfoService.registerEmployee(request);
+
+        return toResponse(result);
+    }
+
     // 社員情報を変更するAPI（URL: /api/admin/employees）
     @PutMapping
     public ResponseEntity<Map<String, Object>> updateEmployee(
@@ -44,6 +55,23 @@ public class EmployeeInfoController {
             HttpSession session) {
 
         EmployeeUpdateResultDto result = employeeInfoService.updateEmployee(request, session);
+
+        return toResponse(result);
+    }
+
+    // 社員を削除するAPI（URL: /api/admin/employees/{employeeId}）
+    @DeleteMapping("/{employeeId}")
+    public ResponseEntity<Map<String, Object>> deleteEmployee(
+            @PathVariable("employeeId") String employeeId) {
+
+        EmployeeUpdateResultDto result = employeeInfoService.deleteEmployee(employeeId);
+
+        return toResponse(result);
+    }
+
+    // EmployeeUpdateResultDto → レスポンス整形（success/messageのMapに詰め替え）
+    // 登録・更新・削除すべてで結果の形が共通のため、ここに1本化する
+    private ResponseEntity<Map<String, Object>> toResponse(EmployeeUpdateResultDto result) {
 
         Map<String, Object> res = new HashMap<>();
         res.put("success", result.isSuccess());
