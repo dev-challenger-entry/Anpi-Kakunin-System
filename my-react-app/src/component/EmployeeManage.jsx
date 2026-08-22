@@ -14,6 +14,7 @@ function EmployeeManage({ onBack, onLogout }) {
   // パスワード
   const [currentPassword, setCurrentPassword] = useState('')
   const [newPassword, setNewPassword] = useState('')
+  const [confirmPassword, setConfirmPassword] = useState('')
 
   // 検索結果が見つかったか
   const [employeeFound, setEmployeeFound] = useState(false)
@@ -161,6 +162,18 @@ function EmployeeManage({ onBack, onLogout }) {
               onChange={(e) => setNewPassword(e.target.value)}
             />
 
+            {/* 確認用パスワード */}
+            <label className="employee-manage-label">
+              確認用パスワード
+            </label>
+
+            <input
+              type="password"
+              className="employee-manage-input"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+            />
+            
             {/* 変更する */}
             <button
               type="button"
@@ -197,7 +210,7 @@ function EmployeeManage({ onBack, onLogout }) {
           ここからログアウトする
         </button>
 
-    </div>
+      </div>
 
     </div >
   )
