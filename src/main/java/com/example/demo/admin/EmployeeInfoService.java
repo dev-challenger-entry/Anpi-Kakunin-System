@@ -158,8 +158,22 @@ public class EmployeeInfoService {
     // ========================================
     public EmployeeUpdateResultDto deleteEmployee(String employeeId) {
 
-        if (!employeeRepository.existsById(employeeId)) {
-            return EmployeeUpdateResultDto.failure("指定されたIDの社員が見つかりません", 404);
+        Optional<Employee> employeeOpt = employeeRepository.findById(employeeId);
+
+        // 指定された社員が存在しない場合
+        if (employeeOpt.isEmpty()) {
+            return EmployeeUpdateResultDto.failure(
+                    "指定されたIDの社員が見つかりません",
+                    404);
+        }
+
+        Employee employee = employeeOpt.get();
+
+        // 管理者アカウントは削除対象外
+        if ("ADMIN".equals(employee.getRole())) {
+            return EmployeeUpdateResultDto.failure(
+                    "管理者アカウントは削除できません",
+                    403);
         }
 
         employeeRepository.deleteById(employeeId);
