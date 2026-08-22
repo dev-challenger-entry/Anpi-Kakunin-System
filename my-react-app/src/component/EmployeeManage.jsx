@@ -69,6 +69,7 @@ function EmployeeManage({ onBack, onLogout }) {
     // 空欄のままEnterやフォーカス外れを防ぐ
     if (!idToSearch) {
       setErrorMsg('ID入力欄が未記入です')
+      setShowNotFoundConfirm(true)
       return
     }
 
@@ -612,7 +613,7 @@ function EmployeeManage({ onBack, onLogout }) {
         )}
 
         {/* ================================
-           新規登録フォーム（ポップアップ）
+                新規登録フォーム（ポップアップ）
         ================================ */}
         {showRegisterForm && (
           <div className="employee-manage-modal-overlay">
