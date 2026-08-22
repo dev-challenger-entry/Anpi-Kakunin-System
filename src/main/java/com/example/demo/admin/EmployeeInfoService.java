@@ -36,7 +36,8 @@ public class EmployeeInfoService {
                 .map(employee -> new EmployeeInfoDto(
                         employee.getEmployeeId(),
                         employee.getName(),
-                        employee.getSectionName()
+                        employee.getSectionName(),
+                        employee.getRole()
                 ));
     }
 

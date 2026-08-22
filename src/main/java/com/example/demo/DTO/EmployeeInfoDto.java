@@ -7,14 +7,17 @@ public class EmployeeInfoDto {
     private String employeeId;
     private String name;
     private String sectionName;
+    private String role;
 
-    public EmployeeInfoDto(String employeeId, String name, String sectionName) {
+    public EmployeeInfoDto(String employeeId, String name, String sectionName, String role) {
         this.employeeId = employeeId;
         this.name = name;
         this.sectionName = sectionName;
+        this.role=role;
     }
 
     public String getEmployeeId() { return employeeId; }
     public String getName() { return name; }
     public String getSectionName() { return sectionName; }
+    public String getRole() { return role; }
 }
