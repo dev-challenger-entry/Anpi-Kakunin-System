@@ -1,5 +1,12 @@
 import './EmployeeManage.css'
+
 import { useState } from 'react'
+
+import EmployeeSearchBar from './EmployeeSearchBar'
+import EmployeeEditForm from './EmployeeEditForm'
+import ChangeConfirmModal from './ChangeConfirmModal'
+import NotFoundConfirmModal from './NotFoundConfirmModal'
+import RegisterFormModal from './RegisterFormModal'
 
 function EmployeeManage({ onBack, onLogout }) {
 
@@ -94,17 +101,14 @@ function EmployeeManage({ onBack, onLogout }) {
   }
 
   // 社員ID検索：入力されたIDでバックエンドに問い合わせる
-  // （新規登録後の再検索でも使い回せるように、IDを引数として受け取れるようにしてある）
   const handleSearchById = async (idToSearch) => {
     setErrorMsg('')
     setEmployeeFound(false)
 
-    // 空欄のままEnterやフォーカス外れを防ぐ
     if (!idToSearch) {
       setErrorMsg('ID入力欄が未記入です')
       setShowNotFoundConfirm(true)
 
-      // 現存するUSERの社員ID一覧を取得
       await handleLoadEmployeeIdList()
       return
     }
@@ -116,7 +120,6 @@ function EmployeeManage({ onBack, onLogout }) {
       )
 
       if (res.status === 404) {
-        // 前回の検索結果が残らないようにクリア
         setEmployeeId('')
         setName('')
         setSectionName('')
@@ -126,7 +129,6 @@ function EmployeeManage({ onBack, onLogout }) {
         setConfirmPassword('')
         setAdminPassword('')
 
-        // 「新規登録に進みますか？」ポップアップを表示する
         setNotFoundId(idToSearch)
         setShowNotFoundConfirm(true)
 
@@ -140,7 +142,6 @@ function EmployeeManage({ onBack, onLogout }) {
 
       const data = await res.json()
 
-      // USER以外は社員管理の対象外
       if (data.role !== 'USER') {
         setEmployeeId('')
         setName('')
@@ -154,7 +155,6 @@ function EmployeeManage({ onBack, onLogout }) {
 
         setErrorMsg('管理者アカウントは管理対象外です')
 
-        // 現存するUSERの社員ID一覧を表示
         await handleLoadEmployeeIdList()
 
         return
@@ -163,14 +163,12 @@ function EmployeeManage({ onBack, onLogout }) {
       setName(data.name)
       setSectionName(data.sectionName)
 
-      // 変更前の状態として保存しておく（あとで差分比較に使う）
       setOriginalData({
         employeeId: data.employeeId,
         name: data.name,
         sectionName: data.sectionName,
       })
 
-      // 社員情報が見つかったので入力欄を表示
       setEmployeeFound(true)
 
     } catch (err) {
@@ -179,13 +177,10 @@ function EmployeeManage({ onBack, onLogout }) {
     }
   }
 
-  // 検索欄（onBlur・Enter）から呼ばれる入口
   const handleSearch = () => {
     handleSearchById(searchId)
   }
 
-
-  // 「新規登録に進みますか？」→「いいえ」
   const handleNotFoundNo = () => {
     setShowNotFoundConfirm(false)
     if (!notFoundId) {
@@ -195,8 +190,6 @@ function EmployeeManage({ onBack, onLogout }) {
     }
   }
 
-  // 「新規登録に進みますか？」→「はい」
-  // ポップアップを閉じて、新規登録フォームのポップアップを開く
   const handleNotFoundYes = () => {
     setShowNotFoundConfirm(false)
 
@@ -210,19 +203,15 @@ function EmployeeManage({ onBack, onLogout }) {
     setShowRegisterForm(true)
   }
 
-
-  // 新規登録フォーム：「登録する」ボタン押下時の処理
   const handleRegister = async () => {
 
     setErrorMsg('')
 
-    // 必須項目チェック
     if (!regEmployeeId || !regName || !regSectionName) {
       setErrorMsg('社員ID・社員名・部署名は必須です')
       return
     }
 
-    // 新規登録時はパスワード必須
     if (!regNewPassword) {
       setErrorMsg('新しいパスワードを入力してください')
       return
@@ -251,7 +240,6 @@ function EmployeeManage({ onBack, onLogout }) {
       const data = await res.json()
 
       if (data.success) {
-        // 登録成功：フォームを閉じて、登録した社員をそのまま検索結果として表示する
         setShowRegisterForm(false)
 
         const registeredId = regEmployeeId
@@ -275,23 +263,15 @@ function EmployeeManage({ onBack, onLogout }) {
     }
   }
 
-
-  // 「変更する」ボタン押下時の処理
-  // 入力チェックと変更差分の洗い出しを行い、確認ポップアップを表示する
   const handleSubmit = () => {
 
     setErrorMsg('')
 
-    // 新しいパスワードと確認用パスワードが一致しているかチェック
-    // （新しいパスワードを入力した場合のみチェックする）
     if (newPassword && newPassword !== confirmPassword) {
       setErrorMsg('新しいパスワードと確認用パスワードが一致していません')
       return
     }
 
-    // ================================
-    // 元データとの差分を洗い出す
-    // ================================
     const items = []
 
     if (originalData) {
@@ -307,17 +287,11 @@ function EmployeeManage({ onBack, onLogout }) {
       items.push('パスワード')
     }
 
-    // 変更項目を保存
     setChangeItems(items)
 
-    // 確認ポップアップを表示
     setShowConfirm(true)
   }
 
-
-  // ================================
-  // 確認後の実際の更新処理
-  // ================================
   const handleConfirmChange = async () => {
 
     if (!currentPassword && !adminPassword) {
@@ -363,10 +337,6 @@ function EmployeeManage({ onBack, onLogout }) {
     }
   }
 
-
-  // ================================
-  // 削除ボタン押下時の処理
-  // ================================
   const handleDelete = async () => {
 
     const confirmed = window.confirm(
@@ -391,7 +361,6 @@ function EmployeeManage({ onBack, onLogout }) {
       const data = await res.json()
 
       if (data.success) {
-        // 削除成功：検索欄・表示項目をすべて初期状態に戻す
         setSearchId('')
         setEmployeeId('')
         setName('')
@@ -426,132 +395,35 @@ function EmployeeManage({ onBack, onLogout }) {
         社員情報登録・更新
       </h2>
 
-      {/* 社員情報 */}
       <div className="employee-manage-form">
 
-        {/* 社員ID検索欄 */}
-        <label className="employee-manage-label">
-          社員ID
-        </label>
-
-        <input
-          type="text"
-          className="employee-manage-input"
-          placeholder="設定したいIDを入力"
-          value={searchId}
-          onChange={(e) => setSearchId(e.target.value)}
-          onBlur={handleSearch}
-          onKeyDown={(e) => {
-            if (e.key === 'Enter') handleSearch()
-          }}
+        <EmployeeSearchBar
+          searchId={searchId}
+          setSearchId={setSearchId}
+          onSearch={handleSearch}
+          errorMsg={errorMsg}
+          showNotFoundConfirm={showNotFoundConfirm}
+          showRegisterForm={showRegisterForm}
+          employeeIdList={employeeIdList}
         />
 
-        {errorMsg && !showNotFoundConfirm && !showRegisterForm && (
-          <>
-            <p className="employee-manage-error">
-              {errorMsg}
-            </p>
-
-            {employeeIdList.length > 0 && (
-              <>
-                <p className="employee-id-list-title">
-                  （登録済のアカウントIDです）
-                </p>
-                <p className="employee-id-list">
-                  {employeeIdList.join(', ')}
-                </p>
-              </>
-            )}
-          </>
-        )}
-
-        {/* 検索結果が見つかった場合のみ表示 */}
         {employeeFound && (
-          <>
-            {/* 社員名 */}
-            <label className="employee-manage-label">
-              社員名
-            </label>
-
-            <input
-              type="text"
-              className="employee-manage-input"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-            />
-
-            {/* 部署名 */}
-            <label className="employee-manage-label">
-              部署名
-            </label>
-
-            <input
-              type="text"
-              className="employee-manage-input"
-              value={sectionName}
-              onChange={(e) => setSectionName(e.target.value)}
-            />
-
-            {/* 現在のパスワード */}
-            <label className="employee-manage-label">
-              現在のパスワード
-              <span className="password-note">
-                ※分からない場合は空欄でも、<br />新しいパスワードを再発行できます。
-              </span>
-            </label>
-
-            <input
-              type="password"
-              className="employee-manage-input"
-              value={currentPassword}
-              onChange={(e) => setCurrentPassword(e.target.value)}
-            />
-
-            {/* 新しいパスワード */}
-            <label className="employee-manage-label">
-              新しいパスワード
-            </label>
-
-            <input
-              type="password"
-              className="employee-manage-input"
-              value={newPassword}
-              onChange={(e) => setNewPassword(e.target.value)}
-            />
-
-            {/* 確認用パスワード */}
-            <label className="employee-manage-label">
-              確認用パスワード
-            </label>
-
-            <input
-              type="password"
-              className="employee-manage-input"
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-            />
-
-            {/* 変更する */}
-            <button
-              type="button"
-              className="employee-manage-change-button"
-              onClick={handleSubmit}
-            >
-              変更する
-            </button>
-
-            {/* 削除する */}
-            <button
-              type="button"
-              className="employee-manage-delete-button"
-              onClick={handleDelete}
-            >
-              削除する
-            </button>
-          </>
+          <EmployeeEditForm
+            name={name}
+            setName={setName}
+            sectionName={sectionName}
+            setSectionName={setSectionName}
+            currentPassword={currentPassword}
+            setCurrentPassword={setCurrentPassword}
+            newPassword={newPassword}
+            setNewPassword={setNewPassword}
+            confirmPassword={confirmPassword}
+            setConfirmPassword={setConfirmPassword}
+            onSubmit={handleSubmit}
+            onDelete={handleDelete}
+          />
         )}
 
-        {/* キャンセル */}
         <button
           type="button"
           className="employee-manage-cancel-button"
@@ -560,7 +432,6 @@ function EmployeeManage({ onBack, onLogout }) {
           キャンセル
         </button>
 
-        {/* ログアウト */}
         <button
           type="button"
           className="employee-manage-logout-button"
@@ -569,216 +440,48 @@ function EmployeeManage({ onBack, onLogout }) {
           ここからログアウトする
         </button>
 
-        {/* ================================
-                変更確認ポップアップ
-        ================================ */}
         {showConfirm && (
-          <div className="employee-manage-modal-overlay">
-
-            <div className="employee-manage-modal">
-
-              <h3 className="employee-manage-modal-title">
-                変更確認
-              </h3>
-
-              {changeItems.length > 0 ? (
-                <>
-                  <p className="employee-manage-modal-message">
-                    以下の項目を変更しますか？
-                  </p>
-
-                  <ul className="employee-manage-modal-list">
-                    {changeItems.map(item => (
-                      <li key={item}>{item}</li>
-                    ))}
-                  </ul>
-                </>
-              ) : (
-                <p className="employee-manage-modal-message">
-                  変更内容がありません。
-                </p>
-              )}
-
-              {!currentPassword && (
-                <>
-                  <p className="employee-manage-modal-note">
-                    現在のパスワードが入力されていませんので、
-                    管理者アカウントのパスワードをご入力ください
-                  </p>
-
-                  <input
-                    type="password"
-                    className="employee-manage-input"
-                    placeholder="管理者アカウントのパスワード"
-                    value={adminPassword}
-                    onChange={(e) => setAdminPassword(e.target.value)}
-                  />
-                </>
-              )}
-
-              <div className="employee-manage-modal-buttons">
-
-                <button
-                  type="button"
-                  className="employee-manage-modal-cancel"
-                  onClick={() => setShowConfirm(false)}
-                >
-                  キャンセル
-                </button>
-
-                <button
-                  type="button"
-                  className="employee-manage-modal-confirm"
-                  onClick={handleConfirmChange}
-                >
-                  変更する
-                </button>
-
-              </div>
-
-            </div>
-
-          </div>
+          <ChangeConfirmModal
+            changeItems={changeItems}
+            currentPassword={currentPassword}
+            adminPassword={adminPassword}
+            setAdminPassword={setAdminPassword}
+            onCancel={() => setShowConfirm(false)}
+            onConfirm={handleConfirmChange}
+          />
         )}
 
-        {/* ================================
-                「存在しないアカウントIDです。
-                 新規登録に進みますか？」ポップアップ
-        ================================ */}
         {showNotFoundConfirm && (
-          <div className="employee-manage-modal-overlay">
-
-            <div className="employee-manage-modal">
-
-              <h3 className="employee-manage-modal-title">
-                確認
-              </h3>
-
-              <p className="employee-manage-modal-message">
-                存在しないアカウントIDです。<br />
-                新規登録に進みますか？
-              </p>
-
-              <div className="employee-manage-modal-buttons">
-
-                <button
-                  type="button"
-                  className="employee-manage-modal-cancel"
-                  onClick={handleNotFoundNo}
-                >
-                  いいえ
-                </button>
-
-                <button
-                  type="button"
-                  className="employee-manage-modal-confirm"
-                  onClick={handleNotFoundYes}
-                >
-                  はい
-                </button>
-
-              </div>
-
-            </div>
-
-          </div>
+          <NotFoundConfirmModal
+            onNo={handleNotFoundNo}
+            onYes={handleNotFoundYes}
+          />
         )}
 
-        {/* ================================
-                新規登録フォーム（ポップアップ）
-        ================================ */}
         {showRegisterForm && (
-          <div className="employee-manage-modal-overlay">
-
-            <div className="employee-manage-modal employee-manage-register-modal">
-
-              <h3 className="employee-manage-modal-title">
-                社員情報の新規登録
-              </h3>
-
-              <label className="employee-manage-label">
-                社員ID
-              </label>
-              <input
-                type="text"
-                className="employee-manage-input"
-                value={regEmployeeId}
-                onChange={(e) => setRegEmployeeId(e.target.value)}
-              />
-
-              <label className="employee-manage-label">
-                社員名
-              </label>
-              <input
-                type="text"
-                className="employee-manage-input"
-                value={regName}
-                onChange={(e) => setRegName(e.target.value)}
-              />
-
-              <label className="employee-manage-label">
-                部署名
-              </label>
-              <input
-                type="text"
-                className="employee-manage-input"
-                value={regSectionName}
-                onChange={(e) => setRegSectionName(e.target.value)}
-              />
-
-              <label className="employee-manage-label">
-                新しいパスワード
-              </label>
-              <input
-                type="password"
-                className="employee-manage-input"
-                value={regNewPassword}
-                onChange={(e) => setRegNewPassword(e.target.value)}
-              />
-
-              <label className="employee-manage-label">
-                確認用パスワード
-              </label>
-              <input
-                type="password"
-                className="employee-manage-input"
-                value={regConfirmPassword}
-                onChange={(e) => setRegConfirmPassword(e.target.value)}
-              />
-
-              {errorMsg && (
-                <p className="employee-manage-error">
-                  {errorMsg}
-                </p>
-              )}
-
-              <button
-                type="button"
-                className="employee-manage-change-button"
-                onClick={handleRegister}
-              >
-                登録する
-              </button>
-
-              <button
-                type="button"
-                className="employee-manage-cancel-button"
-                onClick={() => {
-                  setShowRegisterForm(false)
-                  setErrorMsg('')
-                }}
-              >
-                キャンセル
-              </button>
-
-            </div>
-
-          </div>
+          <RegisterFormModal
+            regEmployeeId={regEmployeeId}
+            setRegEmployeeId={setRegEmployeeId}
+            regName={regName}
+            setRegName={setRegName}
+            regSectionName={regSectionName}
+            setRegSectionName={setRegSectionName}
+            regNewPassword={regNewPassword}
+            setRegNewPassword={setRegNewPassword}
+            regConfirmPassword={regConfirmPassword}
+            setRegConfirmPassword={setRegConfirmPassword}
+            errorMsg={errorMsg}
+            onRegister={handleRegister}
+            onCancel={() => {
+              setShowRegisterForm(false)
+              setErrorMsg('')
+            }}
+          />
         )}
 
       </div>
 
-    </div >
+    </div>
   )
 }
 
