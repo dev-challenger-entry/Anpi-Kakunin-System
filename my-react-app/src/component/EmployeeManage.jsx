@@ -69,6 +69,8 @@ function EmployeeManage({ onBack, onLogout }) {
     // 空欄のままEnterやフォーカス外れを防ぐ
     if (!idToSearch) {
       setErrorMsg('ID入力欄が未記入です')
+
+
       setShowNotFoundConfirm(true)
       return
     }
@@ -133,7 +135,11 @@ function EmployeeManage({ onBack, onLogout }) {
   // 「新規登録に進みますか？」→「いいえ」
   const handleNotFoundNo = () => {
     setShowNotFoundConfirm(false)
-    setErrorMsg('存在しないアカウントIDです')
+    if (!notFoundId) {
+      setErrorMsg('ID入力欄が未記入です')
+    } else {
+      setErrorMsg('存在しないアカウントIDです')
+    }
   }
 
   // 「新規登録に進みますか？」→「はい」
