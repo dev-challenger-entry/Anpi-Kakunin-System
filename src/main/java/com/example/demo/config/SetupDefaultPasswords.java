@@ -14,6 +14,11 @@ public class SetupDefaultPasswords {
      * 開発環境(dev)でのみ実行する。
      *
      * 本番環境では初期パスワードを自動設定しない。
+     *
+     * 【重要】パスワードが既に設定されている（password_hashがnullでない）場合は
+     * 上書きしない。これにより、一度パスワードを変更したアカウントは
+     * Javaの再起動をまたいでも変更内容が保持される。
+     * あくまで「まだ一度もパスワードが設定されていないアカウントへの初期投入」専用とする。
      */
     @Bean
     @Profile("dev")
@@ -23,12 +28,6 @@ public class SetupDefaultPasswords {
 
         return args -> {
 
-            /*
-             * 管理者用の初期パスワード。
-             *
-             * 環境変数 ADMIN_PASSWORD から取得する。
-             * ソースコードにはパスワードそのものを書かない。
-             */
             String defaultPassword =
                     System.getProperty("ADMIN_PASSWORD");
 
@@ -41,21 +40,25 @@ public class SetupDefaultPasswords {
              * 管理者アカウント
              *
              * IDは ADMIN001 に固定。
+             * password_hashが未設定の場合のみ初期化する。
              */
             repo.findById("ADMIN001").ifPresent(admin -> {
 
-                admin.setPasswordHash(
-                        encoder.encode(defaultPassword)
-                );
+                if (admin.getPasswordHash() == null
+                        || admin.getPasswordHash().isBlank()) {
 
-                repo.save(admin);
+                    admin.setPasswordHash(
+                            encoder.encode(defaultPassword)
+                    );
+
+                    repo.save(admin);
+                }
             });
 
             /*
              * サンプル社員
              *
-             * 開発用なので、サンプル社員には
-             * 管理者とは別の初期パスワードを設定する。
+             * password_hashが未設定の場合のみ初期化する。
              */
             setSamplePassword(
                     repo,
@@ -81,11 +84,15 @@ public class SetupDefaultPasswords {
 
         repo.findById(employeeId).ifPresent(employee -> {
 
-            employee.setPasswordHash(
-                    encoder.encode(password)
-            );
+            if (employee.getPasswordHash() == null
+                    || employee.getPasswordHash().isBlank()) {
 
-            repo.save(employee);
+                employee.setPasswordHash(
+                        encoder.encode(password)
+                );
+
+                repo.save(employee);
+            }
         });
     }
 }
