@@ -37,8 +37,7 @@ public class EmployeeInfoService {
                         employee.getEmployeeId(),
                         employee.getName(),
                         employee.getSectionName(),
-                        employee.getRole()
-                ));
+                        employee.getRole()));
     }
 
     // ========================================
@@ -68,9 +67,9 @@ public class EmployeeInfoService {
 
     // 社員情報を更新する
     // 本人確認の方法は2通り：
-    //   ① currentPassword（対象社員自身のパスワード）が入力されていれば、それで照合する
-    //   ② currentPasswordが空欄の場合、代わりにadminPassword
-    //     （ログイン中の管理者自身のパスワード）で照合する
+    // ① currentPassword（対象社員自身のパスワード）が入力されていれば、それで照合する
+    // ② currentPasswordが空欄の場合、代わりにadminPassword
+    // （ログイン中の管理者自身のパスワード）で照合する
     public EmployeeUpdateResultDto updateEmployee(
             EmployeeUpdateRequestDto request,
             HttpSession session) {
@@ -83,7 +82,15 @@ public class EmployeeInfoService {
         }
 
         Employee employee = employeeOpt.get();
-
+        // ========================================
+        // ロール判定
+        // ========================================
+        // 管理者アカウントは社員情報変更の対象外
+        if ("ADMIN".equals(employee.getRole())) {
+            return EmployeeUpdateResultDto.failure(
+                    "管理者アカウントは編集できません",
+                    403);
+        }
         String currentPassword = request.getCurrentPassword();
         String adminPassword = request.getAdminPassword();
 
