@@ -33,7 +33,7 @@ public class SetupDefaultPasswords {
 
             if (defaultPassword == null || defaultPassword.isBlank()) {
                 throw new IllegalStateException(
-                        "ログインIDまたはパスワードが正しくありません");
+                        "ADMIN_PASSWORDが設定されていません。");
             }
 
             /*
@@ -76,6 +76,50 @@ public class SetupDefaultPasswords {
         };
     }
 
+    /*
+     * ADMIN001のパスワードを強制的に初期化する。
+     *
+     * 通常のdev起動では実行されない。
+     * --spring.profiles.active=reset-password
+     * を指定した場合のみ実行される。
+     */
+    @Bean
+    @Profile("reset-password")
+    CommandLineRunner forceResetAdminPassword(
+            EmployeeRepository repo,
+            PasswordEncoder encoder) {
+
+        return args -> {
+
+            String defaultPassword =
+                    System.getProperty("ADMIN_PASSWORD");
+
+            if (defaultPassword == null || defaultPassword.isBlank()) {
+                throw new IllegalStateException(
+                        "ADMIN_PASSWORDが設定されていません。復旧できません。");
+            }
+
+            repo.findById("ADMIN001").ifPresent(admin -> {
+
+                admin.setPasswordHash(
+                        encoder.encode(defaultPassword)
+                );
+
+                repo.save(admin);
+
+                System.out.println(
+                        "【復旧】ADMIN001のパスワードを初期化しました。"
+                );
+            });
+        };
+    }
+
+    /*
+     * 社員のパスワードを初期設定する。
+     *
+     * password_hashが未設定の場合のみ設定する。
+     * 既にパスワードが存在する場合は何もしない。
+     */
     private void setSamplePassword(
             EmployeeRepository repo,
             PasswordEncoder encoder,
