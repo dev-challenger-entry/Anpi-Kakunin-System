@@ -428,3 +428,20 @@
   background-color: #1565c0;
 }
 
+/* ==========================================
+   新規登録フォーム（ポップアップ）
+   ========================================== */
+
+.employee-manage-register-modal .employee-manage-label,
+.employee-manage-register-modal .employee-manage-input {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.employee-manage-register-modal .employee-manage-change-button {
+  margin: 25px auto 0;
+}
+
+.employee-manage-register-modal .employee-manage-cancel-button {
+  margin: 15px auto 0;
+}
