@@ -1,110 +1,54 @@
 package com.example.demo.admin;
 
 import com.example.demo.DTO.AdminInfoDto;
-import com.example.demo.Entity.Employee;
-import com.example.demo.mypage.EmployeeRepository;
+import com.example.demo.DTO.AdminUpdateRequestDto;
+import com.example.demo.DTO.AdminUpdateResultDto;
+
 import jakarta.servlet.http.HttpSession;
+
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 
+// Controllerはリクエストの受付とレスポンスの整形のみを行い、
+// Entity（Employee）やビジネスロジックにはいっさい触れない
 @RestController
-@RequestMapping("/api/admin")
+@RequestMapping("/api/admin/me")
 public class AdminInfoController {
 
-    private final EmployeeRepository employeeRepository;
-    private final PasswordEncoder passwordEncoder;
+    private final AdminInfoService adminInfoService;
 
-    public AdminInfoController(
-            EmployeeRepository employeeRepository,
-            PasswordEncoder passwordEncoder) {
-        this.employeeRepository = employeeRepository;
-        this.passwordEncoder = passwordEncoder;
+    public AdminInfoController(AdminInfoService adminInfoService) {
+        this.adminInfoService = adminInfoService;
     }
 
     // 管理者自身の情報を取得するAPI（管理者情報変更画面の初期表示用）
-    @GetMapping("/me")
+    @GetMapping
     public ResponseEntity<AdminInfoDto> getMe(HttpSession session) {
         String employeeId = (String) session.getAttribute("employeeId");
 
-        Optional<Employee> adminOpt = employeeRepository.findById(employeeId);
-        if (adminOpt.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        }
-
-        Employee admin = adminOpt.get();
-        AdminInfoDto dto = new AdminInfoDto(
-                admin.getEmployeeId(),
-                admin.getName(),
-                admin.getEmail(),
-                admin.getEmail2());
-
-        return ResponseEntity.ok(dto);
+        return adminInfoService.findAdminInfo(employeeId)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
     // 管理者自身の情報を更新するAPI
-    @PutMapping("/me")
+    @PutMapping
     public ResponseEntity<Map<String, Object>> updateMe(
-            // Reactから送られてくるリクエスト
-            @RequestBody Map<String, String> request,
+            @RequestBody AdminUpdateRequestDto request,
             HttpSession session) {
 
         String employeeId = (String) session.getAttribute("employeeId");
+
+        AdminUpdateResultDto result =
+                adminInfoService.updateAdminInfo(employeeId, request);
+
         Map<String, Object> res = new HashMap<>();
+        res.put("success", result.isSuccess());
+        res.put("message", result.getMessage());
 
-        Optional<Employee> adminOpt = employeeRepository.findById(employeeId);
-
-        if (adminOpt.isEmpty()) {
-            res.put("success", false);
-            return ResponseEntity.status(404).body(res);
-        }
-
-        Employee admin = adminOpt.get();
-
-        // Reactから現在のパスワードを取得
-        String currentPassword = request.get("currentPassword");
-
-        // 現在のパスワードを照合
-        if (!passwordEncoder.matches(
-                currentPassword,
-                admin.getPasswordHash())) {
-
-            res.put("success", false);
-            res.put("message", "現在のパスワードが正しくありません");
-            return ResponseEntity.status(401).body(res);
-        }
-
-        //パスワードが正しければ、メールアドレスを取得
-        String email = request.get("email");
-
-        // メールアドレスを更新
-        admin.setEmail(email);
-
-        // ========================================
-        // 新しいパスワードが入力されている場合
-        // ========================================
-
-        String newPassword = request.get("newPassword");
-
-        if (newPassword != null && !newPassword.isBlank()) {
-
-            // 新しいパスワードをハッシュ化
-            String newPasswordHash = passwordEncoder.encode(newPassword);
-
-            // password_hashを更新
-            admin.setPasswordHash(newPasswordHash);
-        }
-
-        // DBに保存
-        employeeRepository.save(admin);
-
-        // 更新成功
-        res.put("success", true);
-
-        return ResponseEntity.ok(res);
+        return ResponseEntity.status(result.getHttpStatus()).body(res);
     }
 }
