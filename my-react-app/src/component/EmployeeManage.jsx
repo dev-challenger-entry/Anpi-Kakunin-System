@@ -26,6 +26,9 @@ function EmployeeManage({ onBack, onLogout }) {
   // 検索結果が見つかったか
   const [employeeFound, setEmployeeFound] = useState(false)
 
+  // 現存する社員ID一覧
+  const [employeeIdList, setEmployeeIdList] = useState([])
+
   // エラーメッセージ
   const [errorMsg, setErrorMsg] = useState('')
 
@@ -59,6 +62,36 @@ function EmployeeManage({ onBack, onLogout }) {
   const [regNewPassword, setRegNewPassword] = useState('')
   const [regConfirmPassword, setRegConfirmPassword] = useState('')
 
+  // 現存するUSERの社員ID一覧を取得する
+  const handleLoadEmployeeIdList = async () => {
+    try {
+      const res = await fetch(
+        'http://localhost:8080/api/admin/employees',
+        {
+          credentials: 'include'
+        }
+      )
+
+      if (!res.ok) {
+        setErrorMsg('社員ID一覧の取得に失敗しました')
+        return
+      }
+
+      const data = await res.json()
+
+      // USERだけを対象にする
+      const userIds = data
+        .filter(employee => employee.role === 'USER')
+        .map(employee => employee.employeeId)
+        .sort()
+
+      setEmployeeIdList(userIds)
+
+    } catch (err) {
+      console.error(err)
+      setErrorMsg('サーバーに接続できませんでした')
+    }
+  }
 
   // 社員ID検索：入力されたIDでバックエンドに問い合わせる
   // （新規登録後の再検索でも使い回せるように、IDを引数として受け取れるようにしてある）
@@ -69,9 +102,10 @@ function EmployeeManage({ onBack, onLogout }) {
     // 空欄のままEnterやフォーカス外れを防ぐ
     if (!idToSearch) {
       setErrorMsg('ID入力欄が未記入です')
-
-
       setShowNotFoundConfirm(true)
+
+      // 現存するUSERの社員ID一覧を取得
+      await handleLoadEmployeeIdList()
       return
     }
 
@@ -394,9 +428,22 @@ function EmployeeManage({ onBack, onLogout }) {
         />
 
         {errorMsg && !showNotFoundConfirm && !showRegisterForm && (
-          <p className="employee-manage-error">
-            {errorMsg}
-          </p>
+          <>
+            <p className="employee-manage-error">
+              {errorMsg}
+            </p>
+
+            {employeeIdList.length > 0 && (
+              <>
+                <p className="employee-id-list-title">
+                  （以下のリストは、登録済のアカウントIDです）
+                </p>
+                <p className="employee-id-list">
+                  {employeeIdList.join(', ')}
+                </p>
+              </>
+            )}
+          </>
         )}
 
         {/* 検索結果が見つかった場合のみ表示 */}
@@ -712,7 +759,7 @@ function EmployeeManage({ onBack, onLogout }) {
 
       </div>
 
-    </div>
+    </div >
   )
 }
 
