@@ -140,6 +140,25 @@ function EmployeeManage({ onBack, onLogout }) {
 
       const data = await res.json()
 
+      // USER以外は社員管理の対象外
+      if (data.role !== 'USER') {
+        setEmployeeId('')
+        setName('')
+        setSectionName('')
+        setOriginalData(null)
+        setCurrentPassword('')
+        setNewPassword('')
+        setConfirmPassword('')
+        setAdminPassword('')
+        setEmployeeFound(false)
+
+        setErrorMsg('管理者アカウントは管理対象外です')
+
+        // 現存するUSERの社員ID一覧を表示
+        await handleLoadEmployeeIdList()
+
+        return
+      }
       setEmployeeId(data.employeeId)
       setName(data.name)
       setSectionName(data.sectionName)
@@ -436,7 +455,7 @@ function EmployeeManage({ onBack, onLogout }) {
             {employeeIdList.length > 0 && (
               <>
                 <p className="employee-id-list-title">
-                  （以下のリストは、登録済のアカウントIDです）
+                  （登録済のアカウントIDです）
                 </p>
                 <p className="employee-id-list">
                   {employeeIdList.join(', ')}
