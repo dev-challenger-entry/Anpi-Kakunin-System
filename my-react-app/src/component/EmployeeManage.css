@@ -445,3 +445,11 @@
 .employee-manage-register-modal .employee-manage-cancel-button {
   margin: 15px auto 0;
 }
+
+/* 新規登録ポップアップ単体にスクロールバーを付与する
+   ・画面の高さの90%を超えたら、ポップアップ内部だけがスクロールする
+   ・他のモーダル（変更確認・存在しないID確認）には影響させない */
+.employee-manage-register-modal {
+  max-height: 90vh;
+  overflow-y: auto;
+}
