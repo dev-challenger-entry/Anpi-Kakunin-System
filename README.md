@@ -61,7 +61,7 @@ LINEやメールも代替手段になりますが、私用の連絡に埋もれ�
 
 
 
-!\[システム構成図](./images/system-architecture.svg)
+![システム構成図](./images/system-architecture.svg)
 
 
 
@@ -159,7 +159,7 @@ GitHub
 <video src="https://github.com/user-attachments/assets/68d63a01-12a1-4379-9759-df01baec5510" width="320" muted autoplay loop playsinline></video>
 
 管理者アカウント画面
-<video src="https://github.com/user-attachments/assets/0c2a9a7a-105c-4317-818d-bf34a8e83f61" width="320" muted autoplay loop playsinline></video>
+<video src="https://github.com/user-attachments/assets/716457bb-7802-4940-8395-4f1f528cf3a3" width="320" muted autoplay loop playsinline></video>
 
 
 
