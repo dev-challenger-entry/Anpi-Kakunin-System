@@ -4,9 +4,9 @@ import { useState } from 'react'
 
 import EmployeeSearchBar from './EmployeeSearchBar'
 import EmployeeEditForm from './EmployeeEditForm'
-import ChangeConfirmModal from './ChangeConfirmModal'
-import NotFoundConfirmModal from './NotFoundConfirmModal'
-import RegisterFormModal from './RegisterFormModal'
+import ChangeConfirmModal from './modals/ChangeConfirmModal'
+import NotFoundConfirmModal from './modals/NotFoundConfirmModal'
+import RegisterFormModal from './modals/RegisterFormModal'
 
 function EmployeeManage({ onBack, onLogout }) {
 
