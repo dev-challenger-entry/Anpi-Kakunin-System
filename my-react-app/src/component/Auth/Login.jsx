@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import './Login.css'
+import { API_BASE_URL } from '../../config/api'
 
 function Login({ onLoginSuccess }) {
 const [id, setId] = useState('')
@@ -12,7 +13,7 @@ const handleLogin = async () => {
 //サーバーにログインリクエストを送信
       try {
       //処理が来るまで待機
-      const res = await fetch('${API_BASE_URL}/api/login', {
+      const res = await fetch(`${API_BASE_URL}/api/login`, {
         method: 'POST',
         credentials: 'include',
         headers: { 'Content-Type': 'application/json' },
