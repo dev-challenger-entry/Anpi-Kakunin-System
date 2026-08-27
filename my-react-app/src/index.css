@@ -11,3 +11,38 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
+/* ==========================================
+   共通スペーシング・フォントサイズ変数
+   ここを直せば、各画面のCSSに書いた var(...) の値が
+   まとめて切り替わる（スマホ対応の一元管理）
+   ========================================== */
+:root {
+  --gap-xl: 24px;
+  --gap-lg: 20px;
+  --gap-md: 16px;
+  --gap-sm: 12px;
+  --gap-xs: 8px;
+
+  --font-heading: 24px;   /* 画面の大見出し（例：集計結果、管理者情報変更） */
+  --font-title: 18px;     /* システムタイトルなど */
+  --font-body: 14px;      /* 通常の本文・ラベル */
+  --font-small: 12px;     /* 補足・注意書き */
+  --font-tiny: 11px;      /* さらに小さい注釈 */
+}
+
+@media (max-width: 480px) {
+  :root {
+    --gap-xl: 18px;
+    --gap-lg: 14px;
+    --gap-md: 12px;
+    --gap-sm: 10px;
+    --gap-xs: 6px;
+
+    --font-heading: 20px;
+    --font-title: 16px;
+    --font-body: 13px;
+    --font-small: 11px;
+    --font-tiny: 10px;
+  }
+}

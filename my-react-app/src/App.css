@@ -5,7 +5,7 @@
   max-width: 320px;
   /* 下のマージンを触ると、個別ページのデザインとの間隔を調整可能 */
   margin: 40px auto 0;
-  padding: 20px;
+  padding: var(--gap-lg);
   text-align: center;
 }
 
@@ -14,16 +14,16 @@
    タイトル・会社名
    ========================================== */
 .system-title {
-  font-size: 18px;
-  margin-bottom: 16px;
+  font-size: var(--font-title);
+  margin-bottom: var(--gap-md);
 }
 
 .company-name {
   border: 1px solid #ccc;
   border-radius: 3px;
   padding: 6px;
-  font-size: 14px;
-  margin-bottom: 16px;
+  font-size: var(--font-body);
+  margin-bottom: var(--gap-md);
 }
 
 /* ==========================================
