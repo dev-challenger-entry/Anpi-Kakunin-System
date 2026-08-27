@@ -18,15 +18,15 @@
 
 .admin-settings-header {
   text-align: center;
-  margin-bottom: 20px;
+  margin-bottom: var(--gap-md);
 }
 
 .admin-settings-header h1 {
-  margin: 0 0 10px;
-  padding: 10px 5px;
+  margin: 0 0 var(--gap-sm);
+  padding: var(--gap-sm) 5px;
   border: 1px solid #999;
   border-radius: 6px;
-  font-size: 15px;
+  font-size: var(--font-small);
   font-weight: normal;
   line-height: 1.3;
 }
@@ -38,7 +38,7 @@
   box-sizing: border-box;
   border: 1px solid #999;
   border-radius: 6px;
-  font-size: 13px;
+  font-size: var(--font-small);
 }
 
 
@@ -47,10 +47,10 @@
    ========================================== */
 
 .admin-settings-title {
-  margin: 0 0 20px;
+  margin: 0 0 var(--gap-md);
   padding: 7px 0;
   text-align: center;
-  font-size: 20px;
+  font-size: var(--font-heading);
   font-weight: bold;
   color: #222222;
   border-top: 1px solid #dddddd;
@@ -73,8 +73,8 @@
 
 .admin-settings-label {
   display: block;
-  margin: 10px 0 4px;
-  font-size: 14px;
+  margin: var(--gap-sm) 0 4px;
+  font-size: var(--font-body);
   font-weight: bold;
   color: #333333;
 }
@@ -87,7 +87,7 @@
 .admin-settings-manual {
   display: block;
   margin-top: 4px;
-  font-size: 11px;
+  font-size: var(--font-tiny);
   font-weight: normal;
   color: #666666;
   line-height: 1.4;
@@ -109,7 +109,7 @@
 
   background-color: #ffffff;
 
-  font-size: 13px;
+  font-size: var(--font-small);
   color: #333333;
 }
 
@@ -131,7 +131,7 @@
   border-color: #cccccc;
   color: #666666;
 
-  font-size: 12px;
+  font-size: var(--font-tiny);
 }
 
 
@@ -152,7 +152,7 @@
   background-color: #1976d2;
   color: #ffffff;
 
-  font-size: 15px;
+  font-size: var(--font-body);
   font-weight: bold;
 
   cursor: pointer;
@@ -180,7 +180,7 @@
   background-color: #ffffff;
   color: #444444;
 
-  font-size: 15px;
+  font-size: var(--font-body);
 
   cursor: pointer;
 }
@@ -207,7 +207,7 @@
   background-color: #ffffff;
   color: #000000;
 
-  font-size: 14px;
+  font-size: var(--font-small);
 
   cursor: pointer;
 }
@@ -262,11 +262,11 @@
    ========================================== */
 
 .admin-settings-modal-title {
-  margin: 0 0 20px;
+  margin: 0 0 var(--gap-md);
 
   text-align: center;
 
-  font-size: 18px;
+  font-size: var(--font-heading);
   font-weight: bold;
 
   color: #222222;
@@ -278,9 +278,9 @@
    ========================================== */
 
 .admin-settings-modal-message {
-  margin: 0 0 15px;
+  margin: 0 0 var(--gap-sm);
 
-  font-size: 14px;
+  font-size: var(--font-body);
   line-height: 1.6;
 
   color: #333333;
@@ -292,15 +292,15 @@
    ========================================== */
 
 .admin-settings-modal-email {
-  margin: 10px 0 20px;
-  padding: 10px;
+  margin: var(--gap-sm) 0 var(--gap-md);
+  padding: var(--gap-sm);
 
   background-color: #f5f5f5;
 
   border: 1px solid #dddddd;
   border-radius: 4px;
 
-  font-size: 13px;
+  font-size: var(--font-small);
   line-height: 1.6;
 
   word-break: break-all;
@@ -312,10 +312,10 @@
    ========================================== */
 
 .admin-settings-modal-list {
-  margin: 10px 0 15px;
+  margin: var(--gap-sm) 0 var(--gap-sm);
   padding-left: 25px;
 
-  font-size: 14px;
+  font-size: var(--font-body);
   line-height: 1.8;
 }
 
@@ -325,9 +325,9 @@
    ========================================== */
 
 .admin-settings-modal-note {
-  margin: 10px 0 20px;
+  margin: var(--gap-sm) 0 var(--gap-md);
 
-  font-size: 12px;
+  font-size: var(--font-small);
   line-height: 1.5;
 
   color: #555555;
@@ -341,9 +341,9 @@
 .admin-settings-modal-buttons {
   display: flex;
   justify-content: center;
-  gap: 15px;
+  gap: var(--gap-sm);
 
-  margin-top: 20px;
+  margin-top: var(--gap-md);
 }
 
 
@@ -361,7 +361,7 @@
   background-color: #ffffff;
   color: #444444;
 
-  font-size: 14px;
+  font-size: var(--font-small);
 
   cursor: pointer;
 }
@@ -385,7 +385,7 @@
   background-color: #1976d2;
   color: #ffffff;
 
-  font-size: 14px;
+  font-size: var(--font-small);
   font-weight: bold;
 
   cursor: pointer;

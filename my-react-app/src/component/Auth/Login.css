@@ -4,13 +4,13 @@
    ========================================== */
 .login-button {
   display: block;
-  margin: 20px auto 0;
+  margin: var(--gap-md) auto 0;
 
   background-color: #f4a6a6;
   border: none;
   border-radius: 4px;
   padding: 10px 20px;
-  font-size: 14px;
+  font-size: var(--font-body);
   cursor: pointer;
 }
 
@@ -25,8 +25,8 @@
 .form-group {
   display: flex;
   align-items: center;
-  gap: 8px;
-  margin-bottom: 10px;
+  gap: var(--gap-xs);
+  margin-bottom: var(--gap-sm);
   text-align: left;
 
   width: 258px;
@@ -36,7 +36,7 @@
 
 .form-group label {
   width: 50px;
-  font-size: 14px;
+  font-size: var(--font-body);
 }
 
 .form-group input {
@@ -58,6 +58,5 @@
 
 .login-error-message {
   color: #ff3333;
-  font-size: 12px;
+  font-size: var(--font-small);
 }
-
