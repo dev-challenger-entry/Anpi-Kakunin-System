@@ -58,7 +58,7 @@ function MyPage({ employeeId, onLogout }) {
   useEffect(() => {
 
     fetch(
-      `http://localhost:8080/api/mypage?employeeId=${employeeId}`,
+      `${API_BASE_URL}/api/mypage?employeeId=${employeeId}`,
       {
         credentials: 'include'
       }
@@ -117,7 +117,7 @@ function MyPage({ employeeId, onLogout }) {
     try {
 
       const response = await fetch(
-        `http://localhost:8080/api/status/${employee.employeeId}`,
+        `${API_BASE_URL}/api/status/${employee.employeeId}`,
         {
           method: 'PUT',
           credentials: 'include',

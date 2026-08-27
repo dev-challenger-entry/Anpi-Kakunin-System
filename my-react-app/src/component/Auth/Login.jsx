@@ -12,7 +12,7 @@ const handleLogin = async () => {
 //サーバーにログインリクエストを送信
       try {
       //処理が来るまで待機
-      const res = await fetch('http://localhost:8080/api/login', {
+      const res = await fetch('${API_BASE_URL}/api/login', {
         method: 'POST',
         credentials: 'include',
         headers: { 'Content-Type': 'application/json' },

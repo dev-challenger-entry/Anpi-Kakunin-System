@@ -7,7 +7,7 @@ function Captcha({ onSuccess }) {
 
   // 画面表示時にバックエンドから認証コードを取得する
   useEffect(() => {
-    fetch('http://localhost:8080/api/captcha/generate', {
+    fetch('${API_BASE_URL}/api/captcha/generate', {
       credentials: 'include',
     })
       .then(res => res.json())
@@ -21,7 +21,7 @@ function Captcha({ onSuccess }) {
   const handleCheck = async () => {
     setErrorMsg('')
     try {
-      const res = await fetch('http://localhost:8080/api/captcha/verify', {
+      const res = await fetch('${API_BASE_URL}/api/captcha/verify', {
         method: 'POST',
         credentials: 'include',
         headers: { 'Content-Type': 'application/json' },

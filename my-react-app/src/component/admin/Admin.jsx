@@ -30,10 +30,10 @@ function AdminStatusSummary({
   // 画面表示時にAPIからデータを取得
   useEffect(() => {
     Promise.all([
-      fetch('http://localhost:8080/api/admin/status-summary', {
+      fetch('${API_BASE_URL}/api/admin/status-summary', {
         credentials: 'include'
       }),
-      fetch('http://localhost:8080/api/admin/employees', {
+      fetch('${API_BASE_URL}/api/admin/employees', {
         credentials: 'include'
       }),
     ])
