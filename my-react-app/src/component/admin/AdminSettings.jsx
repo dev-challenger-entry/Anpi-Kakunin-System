@@ -1,4 +1,5 @@
 import './AdminSettings.css'
+import { API_BASE_URL } from '../../config/api'
 
 import { useState, useEffect } from 'react'
 
@@ -75,7 +76,7 @@ function AdminSettings({ onBack, onLogout }) {
   useEffect(() => {
 
     // 管理者自身の情報を取得するAPIを呼び出す
-    fetch('http://localhost:8080/api/admin/me', {
+    fetch('${API_BASE_URL}/api/admin/me', {
       credentials: 'include'
     })
       .then(res => res.json())
@@ -162,7 +163,7 @@ function AdminSettings({ onBack, onLogout }) {
 
     try {
 
-      const res = await fetch('http://localhost:8080/api/admin/me', {
+      const res = await fetch('${API_BASE_URL}/api/admin/me', {
         method: 'PUT',
         credentials: 'include',
         headers: {

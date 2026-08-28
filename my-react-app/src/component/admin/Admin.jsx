@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import './Admin.css'
+import { API_BASE_URL } from '../../config/api'
 
 // ステータスの値（DBの値）と、画面表示用のラベル・CSSクラス名をセットにした配列
 // ここに書かれている順番がそのまま画面での表示順になる
@@ -30,10 +31,10 @@ function AdminStatusSummary({
   // 画面表示時にAPIからデータを取得
   useEffect(() => {
     Promise.all([
-      fetch('http://localhost:8080/api/admin/status-summary', {
+      fetch(`${API_BASE_URL}/api/admin/status-summary`, {
         credentials: 'include'
       }),
-      fetch('http://localhost:8080/api/admin/employees', {
+      fetch(`${API_BASE_URL}/api/admin/employees`, {
         credentials: 'include'
       }),
     ])
