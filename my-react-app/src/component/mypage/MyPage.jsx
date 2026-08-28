@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import './MyPage.css'
+import { API_BASE_URL } from '../../config/api'
 
 
 // 安否状況の選択肢一覧
@@ -23,11 +24,11 @@ const formatDateTime = (dateTime) => {
   const date = new Date(dateTime)
 
   return `${date.getFullYear()}年` +
-         `${String(date.getMonth() + 1).padStart(2, '0')}月` +
-         `${String(date.getDate()).padStart(2, '0')}日` +
-         `${String(date.getHours()).padStart(2, '0')}時` +
-         `${String(date.getMinutes()).padStart(2, '0')}分` +
-         `${String(date.getSeconds()).padStart(2, '0')}秒`
+    `${String(date.getMonth() + 1).padStart(2, '0')}月` +
+    `${String(date.getDate()).padStart(2, '0')}日` +
+    `${String(date.getHours()).padStart(2, '0')}時` +
+    `${String(date.getMinutes()).padStart(2, '0')}分` +
+    `${String(date.getSeconds()).padStart(2, '0')}秒`
 }
 
 
@@ -58,7 +59,7 @@ function MyPage({ employeeId, onLogout }) {
   useEffect(() => {
 
     fetch(
-      `http://localhost:8080/api/mypage?employeeId=${employeeId}`,
+      `${API_BASE_URL}/api/mypage?employeeId=${employeeId}`,
       {
         credentials: 'include'
       }
@@ -117,7 +118,7 @@ function MyPage({ employeeId, onLogout }) {
     try {
 
       const response = await fetch(
-        `http://localhost:8080/api/status/${employee.employeeId}`,
+        `${API_BASE_URL}/api/status/${employee.employeeId}`,
         {
           method: 'PUT',
           credentials: 'include',
@@ -146,20 +147,20 @@ function MyPage({ employeeId, onLogout }) {
       }
 
 
-// Javaから返されたJSONを1回だけ取得
-const result = await response.json()
+      // Javaから返されたJSONを1回だけ取得
+      const result = await response.json()
 
-// DBに保存した安否状況を画面に反映
-setEmployee(previousEmployee => ({
-  ...previousEmployee,
-  safetyStatus: result.status
-}))
+      // DBに保存した安否状況を画面に反映
+      setEmployee(previousEmployee => ({
+        ...previousEmployee,
+        safetyStatus: result.status
+      }))
 
-// Java/Spring Boot側でDB更新した時刻を表示
-setLastSendTime(result.answeredTime)
+      // Java/Spring Boot側でDB更新した時刻を表示
+      setLastSendTime(result.answeredTime)
 
-// 成功した場合だけ送信完了画面へ
-setScreen('complete')
+      // 成功した場合だけ送信完了画面へ
+      setScreen('complete')
 
     } catch (error) {
 

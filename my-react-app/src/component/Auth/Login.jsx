@@ -2,17 +2,17 @@ import { useState } from 'react'
 import './Login.css'
 
 function Login({ onLoginSuccess }) {
-const [id, setId] = useState('')
-const [password, setPassword] = useState('') 
-// エラーメッセージを画面に表示するための「変数」と「それを更新する関数」
-const [errorMsg, setErrorMsg] = useState('')
-// ユーザーがログインボタンを押したときに実行する、非同期の関数を定義
-const handleLogin = async () => {
-      setErrorMsg('')
-//サーバーにログインリクエストを送信
-      try {
+  const [id, setId] = useState('')
+  const [password, setPassword] = useState('')
+  // エラーメッセージを画面に表示するための「変数」と「それを更新する関数」
+  const [errorMsg, setErrorMsg] = useState('')
+  // ユーザーがログインボタンを押したときに実行する、非同期の関数を定義
+  const handleLogin = async () => {
+    setErrorMsg('')
+    //サーバーにログインリクエストを送信
+    try {
       //処理が来るまで待機
-      const res = await fetch('http://localhost:8080/api/login', {
+      const res = await fetch(`${API_BASE_URL}/api/login`, {
         method: 'POST',
         credentials: 'include',
         headers: { 'Content-Type': 'application/json' },
@@ -20,11 +20,11 @@ const handleLogin = async () => {
         body: JSON.stringify({ employeeId: id, password: password }),
       })
       //サーバーから来たデータをジャバスクリプトに使えるデータへ変換する
-　　　 const data = await res.json()
+      const data = await res.json()
 
-     //ログインの合否（結果）に応じて、画面の表示を切り替える条件分岐とエラー処理
-    if (data.success) {
-       onLoginSuccess(data.employeeId, data.role)
+      //ログインの合否（結果）に応じて、画面の表示を切り替える条件分岐とエラー処理
+      if (data.success) {
+        onLoginSuccess(data.employeeId, data.role)
       } else {
         setErrorMsg(data.message || 'ログインに失敗しました')
       }
@@ -34,7 +34,7 @@ const handleLogin = async () => {
     }
   }
 
-    // ログイン失敗時：ワイヤーフレーム通り、入力フォームは表示せずエラーのみの画面にする
+  // ログイン失敗時：ワイヤーフレーム通り、入力フォームは表示せずエラーのみの画面にする
   if (errorMsg) {
     return (
       <div className="login-error-screen">
@@ -62,14 +62,14 @@ const handleLogin = async () => {
           type="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          onKeyDown={(e) => { if (e.key === 'Enter') handleLogin()}}
+          onKeyDown={(e) => { if (e.key === 'Enter') handleLogin() }}
         />
       </div>
 
       <button className="login-button" onClick={handleLogin}>
         ログイン（仮）
       </button>
-    
+
     </>
   )
 }
