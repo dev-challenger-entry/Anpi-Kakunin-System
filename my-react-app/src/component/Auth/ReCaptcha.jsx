@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { API_BASE_URL } from '../../config/api'
 
 function Captcha({ onSuccess }) {
   const [answer, setAnswer] = useState('')
@@ -7,7 +8,7 @@ function Captcha({ onSuccess }) {
 
   // 画面表示時にバックエンドから認証コードを取得する
   useEffect(() => {
-    fetch('${API_BASE_URL}/api/captcha/generate', {
+    fetch(`${API_BASE_URL}/api/captcha/generate`, {
       credentials: 'include',
     })
       .then(res => res.json())
@@ -21,7 +22,7 @@ function Captcha({ onSuccess }) {
   const handleCheck = async () => {
     setErrorMsg('')
     try {
-      const res = await fetch('${API_BASE_URL}/api/captcha/verify', {
+      const res = await fetch(`${API_BASE_URL}/api/captcha/verify`, {
         method: 'POST',
         credentials: 'include',
         headers: { 'Content-Type': 'application/json' },

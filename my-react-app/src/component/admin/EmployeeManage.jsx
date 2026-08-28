@@ -1,4 +1,5 @@
 import './EmployeeManage.css'
+import { API_BASE_URL } from '../../config/api'
 
 import { useState } from 'react'
 
@@ -73,7 +74,7 @@ function EmployeeManage({ onBack, onLogout }) {
   const handleLoadEmployeeIdList = async () => {
     try {
       const res = await fetch(
-        '${API_BASE_URL}/api/admin/employees',
+        `${API_BASE_URL}/api/admin/employees`,
         {
           credentials: 'include'
         }
@@ -223,7 +224,7 @@ function EmployeeManage({ onBack, onLogout }) {
     }
 
     try {
-      const res = await fetch('${API_BASE_URL}/api/admin/employees', {
+      const res = await fetch(`${API_BASE_URL}/api/admin/employees`, {
         method: 'POST',
         credentials: 'include',
         headers: {
@@ -303,7 +304,7 @@ function EmployeeManage({ onBack, onLogout }) {
     setErrorMsg('')
 
     try {
-      const res = await fetch('${API_BASE_URL}/api/admin/employees', {
+      const res = await fetch(`${API_BASE_URL}/api/admin/employees`, {
         method: 'PUT',
         credentials: 'include',
         headers: {

@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import './MyPage.css'
+import { API_BASE_URL } from '../../config/api'
 
 
 // 安否状況の選択肢一覧
