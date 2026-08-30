@@ -5,6 +5,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
+import org.springframework.core.env.Environment;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Configuration
@@ -20,16 +21,17 @@ public class SetupDefaultPasswords {
      * Javaの再起動をまたいでも変更内容が保持される。
      * あくまで「まだ一度もパスワードが設定されていないアカウントへの初期投入」専用とする。
      */
+
     @Bean
     @Profile("dev")
     CommandLineRunner initDefaultPasswords(
             EmployeeRepository repo,
-            PasswordEncoder encoder) {
+            PasswordEncoder encoder,
+            Environment environment) {
 
         return args -> {
 
-            String defaultPassword =
-                    System.getProperty("ADMIN_PASSWORD");
+            String defaultPassword = environment.getProperty("ADMIN_PASSWORD");
 
             if (defaultPassword == null || defaultPassword.isBlank()) {
                 throw new IllegalStateException(
@@ -42,14 +44,14 @@ public class SetupDefaultPasswords {
              * IDは ADMIN001 に固定。
              * password_hashが未設定の場合のみ初期化する。
              */
+
             repo.findById("ADMIN001").ifPresent(admin -> {
 
                 if (admin.getPasswordHash() == null
                         || admin.getPasswordHash().isBlank()) {
 
                     admin.setPasswordHash(
-                            encoder.encode(defaultPassword)
-                    );
+                            encoder.encode(defaultPassword));
 
                     repo.save(admin);
                 }
@@ -60,19 +62,18 @@ public class SetupDefaultPasswords {
              *
              * password_hashが未設定の場合のみ初期化する。
              */
+
             setSamplePassword(
                     repo,
                     encoder,
                     "E001",
-                    "employee"
-            );
+                    "employee");
 
             setSamplePassword(
                     repo,
                     encoder,
                     "E002",
-                    "employee"
-            );
+                    "employee");
         };
     }
 
@@ -83,16 +84,17 @@ public class SetupDefaultPasswords {
      * --spring.profiles.active=reset-password
      * を指定した場合のみ実行される。
      */
+
     @Bean
     @Profile("reset-password")
     CommandLineRunner forceResetAdminPassword(
             EmployeeRepository repo,
-            PasswordEncoder encoder) {
+            PasswordEncoder encoder,
+            Environment environment) {
 
         return args -> {
 
-            String defaultPassword =
-                    System.getProperty("ADMIN_PASSWORD");
+            String defaultPassword = environment.getProperty("ADMIN_PASSWORD");
 
             if (defaultPassword == null || defaultPassword.isBlank()) {
                 throw new IllegalStateException(
@@ -102,14 +104,12 @@ public class SetupDefaultPasswords {
             repo.findById("ADMIN001").ifPresent(admin -> {
 
                 admin.setPasswordHash(
-                        encoder.encode(defaultPassword)
-                );
+                        encoder.encode(defaultPassword));
 
                 repo.save(admin);
 
                 System.out.println(
-                        "【復旧】ADMIN001のパスワードを初期化しました。"
-                );
+                        "【復旧】ADMIN001のパスワードを初期化しました。");
             });
         };
     }
@@ -120,6 +120,7 @@ public class SetupDefaultPasswords {
      * password_hashが未設定の場合のみ設定する。
      * 既にパスワードが存在する場合は何もしない。
      */
+
     private void setSamplePassword(
             EmployeeRepository repo,
             PasswordEncoder encoder,
@@ -132,8 +133,7 @@ public class SetupDefaultPasswords {
                     || employee.getPasswordHash().isBlank()) {
 
                 employee.setPasswordHash(
-                        encoder.encode(password)
-                );
+                        encoder.encode(password));
 
                 repo.save(employee);
             }
