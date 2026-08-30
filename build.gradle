@@ -34,8 +34,12 @@ dependencies {
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 	testAnnotationProcessor 'org.projectlombok:lombok'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
-    //.envファイル（環境変数を書き込んだ設定ファイル）を自動的に読み込めるようにする拡張ツール（ライブラリ）
-	implementation 'me.paulschwarz:spring-dotenv:4.0.0'
+	//.envファイル（環境変数を書き込んだ設定ファイル）を自動的に読み込むためのライブラリ。
+	//Spring Boot 4専用モジュールを、開発時のみ有効なdevelopmentOnlyスコープで導入する。
+	//（本番Docker環境では.env自体を使わず、docker-compose.ymlのenvironmentから
+	//  直接システム環境変数を注入するため、本番ビルドにこのライブラリを含める必要はない）
+	implementation platform('me.paulschwarz:spring-dotenv-bom:5.1.0')
+	developmentOnly 'me.paulschwarz:springboot4-dotenv'
 	//パスワードをハッシュ化させるために以下の依存関係を追加する必要がある
 	implementation 'org.springframework.security:spring-security-crypto'
     //ビルドツール Gradle において、MySQL データベースへ接続するための公式 JDBC ドライバ（MySQL Connector/J）を依存関係に追加する記述
