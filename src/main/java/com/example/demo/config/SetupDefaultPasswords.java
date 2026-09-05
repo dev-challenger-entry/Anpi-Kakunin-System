@@ -12,18 +12,22 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 public class SetupDefaultPasswords {
 
     /*
-     * 開発環境(dev)でのみ実行する。
-     *
-     * 本番環境では初期パスワードを自動設定しない。
+     * dev環境・本番環境の両方で実行する。
      *
      * 【重要】パスワードが既に設定されている（password_hashがnullでない）場合は
      * 上書きしない。これにより、一度パスワードを変更したアカウントは
-     * Javaの再起動をまたいでも変更内容が保持される。
+     * 再起動をまたいでも変更内容が保持される。
      * あくまで「まだ一度もパスワードが設定されていないアカウントへの初期投入」専用とする。
+     *
+     * 【本番運用での位置づけ】
+     * 本番デプロイ直後、ADMIN001のpassword_hashはdata.sqlの時点でNULLのため、
+     * このRunnerが動かないと管理者が一度もログインできなくなる。
+     * そのため、dev限定にはせずprodでも必ず実行されるようにしている。
+     * ADMIN_PASSWORDは本番ではRailway等の環境変数として安全に注入する想定。
      */
 
     @Bean
-    @Profile("dev")
+    @Profile({"dev", "prod"})
     CommandLineRunner initDefaultPasswords(
             EmployeeRepository repo,
             PasswordEncoder encoder,
@@ -60,27 +64,32 @@ public class SetupDefaultPasswords {
             /*
              * サンプル社員
              *
-             * password_hashが未設定の場合のみ初期化する。
+             * 本番ではサンプルデータを投入したくないケースもあるため、
+             * dev環境でのみ初期化する。
              */
 
-            setSamplePassword(
-                    repo,
-                    encoder,
-                    "E001",
-                    "employee");
+            if (environment.acceptsProfiles(
+                    org.springframework.core.env.Profiles.of("dev"))) {
 
-            setSamplePassword(
-                    repo,
-                    encoder,
-                    "E002",
-                    "employee");
+                setSamplePassword(
+                        repo,
+                        encoder,
+                        "E001",
+                        "employee");
+
+                setSamplePassword(
+                        repo,
+                        encoder,
+                        "E002",
+                        "employee");
+            }
         };
     }
 
     /*
      * ADMIN001のパスワードを強制的に初期化する。
      *
-     * 通常のdev起動では実行されない。
+     * 通常起動では実行されない。
      * --spring.profiles.active=reset-password
      * を指定した場合のみ実行される。
      */
