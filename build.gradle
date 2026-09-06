@@ -1,3 +1,4 @@
+
 plugins {
 	id 'java'
 	id 'org.springframework.boot' version '4.1.0'
@@ -11,9 +12,10 @@ java {
 	toolchain {
 		languageVersion = JavaLanguageVersion.of(21)
 	}
-	tasks.withType(JavaCompile) {
-    options.compilerArgs << '-parameters'
 }
+
+tasks.withType(JavaCompile).configureEach {
+	options.compilerArgs << '-parameters'
 }
 
 repositories {
@@ -21,31 +23,68 @@ repositories {
 }
 
 dependencies {
+
+	// ============================================================
+	// Spring Boot
+	// ============================================================
+
 	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
 	implementation 'org.springframework.boot:spring-boot-starter-webmvc'
-    // 以下は、Javaプログラムからデータベースに接続し、データを操作するための仕組み
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+
+	// 開発時のみ使用
+	developmentOnly 'org.springframework.boot:spring-boot-devtools'
+
+
+	// ============================================================
+	// Lombok
+	// ============================================================
 
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
+
+	testCompileOnly 'org.projectlombok:lombok'
+	testAnnotationProcessor 'org.projectlombok:lombok'
+
+
+	// ============================================================
+	// Spring-Dotenv
+	// ============================================================
+	// Spring Boot 4 用の .env 読み込みライブラリ
+	// バージョンを直接指定して依存関係解決を明確にする。
+	//
+	// .env は開発環境でのみ使用し、
+	// 本番環境では Docker / Railway 等から
+	// 環境変数を直接渡す想定。
+	// ============================================================
+
+	developmentOnly 'me.paulschwarz:springboot4-dotenv:5.1.0'
+
+
+	// ============================================================
+	// Spring Security Crypto
+	// ============================================================
+	// パスワードのハッシュ化に使用
+	implementation 'org.springframework.security:spring-security-crypto'
+
+
+	// ============================================================
+	// MySQL
+	// ============================================================
+	// MySQL Connector/J
+	runtimeOnly 'com.mysql:mysql-connector-j'
+
+
+	// ============================================================
+	// Test
+	// ============================================================
+
 	testImplementation 'org.springframework.boot:spring-boot-starter-thymeleaf-test'
 	testImplementation 'org.springframework.boot:spring-boot-starter-webmvc-test'
-	testCompileOnly 'org.projectlombok:lombok'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
-	testAnnotationProcessor 'org.projectlombok:lombok'
-    developmentOnly 'org.springframework.boot:spring-boot-devtools'
-	//.envファイル（環境変数を書き込んだ設定ファイル）を自動的に読み込むためのライブラリ。
-	//Spring Boot 4専用モジュールを、開発時のみ有効なdevelopmentOnlyスコープで導入する。
-	//（本番Docker環境では.env自体を使わず、docker-compose.ymlのenvironmentから
-	//  直接システム環境変数を注入するため、本番ビルドにこのライブラリを含める必要はない）
-	implementation platform('me.paulschwarz:spring-dotenv-bom:5.1.0')
-	developmentOnly 'me.paulschwarz:springboot4-dotenv'
-	//パスワードをハッシュ化させるために以下の依存関係を追加する必要がある
-	implementation 'org.springframework.security:spring-security-crypto'
-    //ビルドツール Gradle において、MySQL データベースへ接続するための公式 JDBC ドライバ（MySQL Connector/J）を依存関係に追加する記述
-    runtimeOnly 'com.mysql:mysql-connector-j'
 }
 
 tasks.named('test') {
 	useJUnitPlatform()
 }
+
