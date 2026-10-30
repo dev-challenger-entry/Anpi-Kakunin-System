@@ -156,10 +156,14 @@ GitHub
 
 **※内容や仕様は変更になる場合があります**
 一般社員アカウント画面
-<video src="https://github.com/user-attachments/assets/68d63a01-12a1-4379-9759-df01baec5510" width="320" muted autoplay loop playsinline></video>
+
+https://github.com/user-attachments/assets/68d63a01-12a1-4379-9759-df01baec5510
+
 
 管理者アカウント画面
-<video src="https://github.com/user-attachments/assets/716457bb-7802-4940-8395-4f1f528cf3a3" width="320" muted autoplay loop playsinline></video>
+
+https://github.com/user-attachments/assets/716457bb-7802-4940-8395-4f1f528cf3a3
+
 
 
 
